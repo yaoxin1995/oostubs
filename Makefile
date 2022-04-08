@@ -124,7 +124,7 @@ $(OBJDIR)/_%.o : %.asm
 $(OBJDIR)/system: $(FIRST_OBJECT) $(OBJPRE)
 	@echo "LD		$@"
 	@if test \( ! \( -d $(@D) \) \) ;then mkdir -p $(@D);fi
-	$(VERBOSE) $(CXX) $(CXXFLAGS) -static -z max-page-size=0x1000 -e startup -T sections -o $(OBJDIR)/system $(FIRST_OBJECT) $(OBJPRE)
+	$(VERBOSE) $(CXX) $(CXXFLAGS)  -static  -z max-page-size=0x1000 -e startup -T sections -o $(OBJDIR)/system $(FIRST_OBJECT) $(OBJPRE)
 
 # --------------------------------------------------------------------------
 # 'bootdisk.iso' consists of the system and a boot loader (GRUB) with boot

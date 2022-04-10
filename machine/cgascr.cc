@@ -11,18 +11,15 @@
 /*****************************************************************************/
 
 #include "machine/cgascr.h"
-
-extern "C" {
-  // Get declaration for f(int i, char c, float x)
-  #include "clibs.h"
-}
+#include "machine/io_port.h"
+#include <cstddef>
 
 
-/* Add your code here */ 
+char* const CGA_Screen::CGA_START = (char *)0xb8000;
 
 CGA_Screen::CGA_Screen()
 {
-    CGA_START = (char *)0xb8000;
+
 }
 
 void CGA_Screen::show (int x, int y, char c, unsigned char attrib)
@@ -37,64 +34,68 @@ void CGA_Screen::show (int x, int y, char c, unsigned char attrib)
     *(pos + 1) = attrib;
 }
 
-/**
- * @brief set curse postion
- * Registers 14 and 15 set the cursor address, which is calculated from the cursor position. 
- * For example, to place the cursor in row 10 and column 63, calculate 10 * 80 + 63 = 863. 
- * This value is then written into the high and low bytes of the cursor address registers
- * @param x 
- * @param y 
- * @return ** void 
- */
+
 void CGA_Screen::setpos (int x, int y)
 {
-    unsigned short cursor_loc = y * COLS_COUNT + x;
+    IO_Port index_reg(INDEXREGISTER);
+    IO_Port data_reg(DATENREGISTER);
+
+    unsigned short cursor_location = y * COLS_COUNT + x;
 
     // cursor LOW port to vga INDEX register
-    outb(IDXPORT, REG_INX_CURSOR_LOW);
-    outb(DATAPORT, (unsigned char)(cursor_loc & 0xFF));
+    index_reg.outb(REG_INX_CURSOR_LOW);
+    data_reg.outb((unsigned char)(cursor_location & 0xFF));
 
     // cursor HIGH port to vga INDEX register
-    outb(IDXPORT, REG_INX_CURSOR_HIGH);
-    outb(DATAPORT, (unsigned char)(cursor_loc >> 8) & 0XFF);
-}
+    index_reg.outb(REG_INX_CURSOR_HIGH);
+    data_reg.outb((unsigned char)(cursor_location >> 8) & 0XFF);
+} 
 
-
-/**
- * @brief get curse position
- * 
- * @param x 
- * @param y 
- */
 
 void CGA_Screen::getpos (int &x, int &y)
 {
-    int pos;
+    IO_Port index_reg(INDEXREGISTER);
+    IO_Port data_reg(DATENREGISTER);
+    unsigned short pos = 0;
 
     // get REG_INX_CURSOR_HIGH
-    outb(IDXPORT, REG_INX_CURSOR_HIGH);
-    pos = inb(DATAPORT) << 8;
+    index_reg.outb(REG_INX_CURSOR_HIGH);
+    pos = data_reg.inb() << 8;
 
     // get REG_INX_CURSOR_LOW
-    outb(IDXPORT, REG_INX_CURSOR_LOW);
-    pos |= inb(DATAPORT);
+    index_reg.outb(REG_INX_CURSOR_LOW);
+    pos |= data_reg.inb();
 
     x = pos % COLS_COUNT;
-    y = (pos - x) / COLS_COUNT;
+    y = pos / COLS_COUNT;
     
     //assert((pos - x) % COLS_COUNT == 0);
 
 }
 
-void CGA_Screen::shift_up_one_line (int &x, int &y)
-{
-    //shift up
-    my_memmove(CGA_START, CGA_START + COLS_COUNT, sizeof(CGA_START[0]) * (ROW_COUNT - 1) * COLS_COUNT);
-    // delete the last line
-    my_memset(CGA_START + COLS_COUNT * (ROW_COUNT - 1), '0', COLS_COUNT);
 
-    x = 0;
-    y = ROW_COUNT - 1;
+void memcpy(void * dest, const void * source, size_t num)
+{
+	for(int i = 0; i < num; i++) 
+	{
+		*((char*)dest+i) = *((char*)source+i);
+	}
+}
+
+void CGA_Screen::shift_up_one_line ()
+{
+    char *dest, *source, *pos;
+
+    for (int i = 0; i < ROW_COUNT - 1; i++) {
+        dest = CGA_START + i * COLS_COUNT * 2;
+        source = CGA_START + (i + 1) * COLS_COUNT * 2;
+        memcpy(dest, source, COLS_COUNT * 2);
+    }
+
+    pos = CGA_START + 2 * COLS_COUNT * (ROW_COUNT - 1);   
+    for (int i = 0; i < COLS_COUNT - 1; i++) 
+        pos[i * 2] = ' ';
+    
 }
 
 void CGA_Screen::print (char* text, int length, unsigned char attrib)
@@ -103,34 +104,34 @@ void CGA_Screen::print (char* text, int length, unsigned char attrib)
 
     getpos(start_x, start_y);
 
-    //assert(start_x >=0 && start_x < COLS_COUNT);
-    //assert(start_y >=0 && start_y < ROW_COUNT);
-
     for (i = 0; i < length; i++) {
-        if (*text == '\n') {
+        if (text[i] == '\n') {
             if (start_y == COLS_COUNT -1)
-                shift_up_one_line(start_x, start_y);
-            else {
-                start_x = 0;
+                shift_up_one_line();
+            else
                 start_y += 1;
-            }
-            text++;
+            start_x = 0;
+            continue;
         }
 
-        show(start_x, start_y, *text, attrib);
+        show(start_x, start_y, text[i], attrib);
 
-        text++;
-
-        if (start_x == COLS_COUNT - 1 && start_y == ROW_COUNT -1)
-            shift_up_one_line(start_x, start_y);
-        else {
-            start_x++;
-            if (start_x == COLS_COUNT) {
+        if (start_x == COLS_COUNT - 1) {
+            start_x = 0;
+            if (start_y == ROW_COUNT - 1)
+                shift_up_one_line();
+            else
                 start_y++;
-                start_x = 0;
-            }
         }
+        start_x++;
+
     }
 
     setpos(start_x, start_y);
-}
+
+} 
+
+
+
+
+	

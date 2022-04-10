@@ -1,12 +1,12 @@
 /* Add your code here */ 
 #include "machine/cgascr.h"
 
-#define TEXTLEN 100
+#define TEXTLEN 1000
 
 
 static void get_string(char* str, int size)
 {
-    const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJK...";
+    const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJK...\n\n";
     if (size) {
         --size;
         for (int n = 0; n < size; n++) {

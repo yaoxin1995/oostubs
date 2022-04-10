@@ -16,11 +16,49 @@
 #ifndef __strbuf_include__
 #define __strbuf_include__
 
+#define DEFAULT_BUF_SIZE 100
 class Stringbuffer {
 private:
+	char *buffer;
+	int buf_size;
+	int current_buf_size;
+
 	Stringbuffer(const Stringbuffer &copy); // prevent copying
 
 /* Add your code here */ 
+public:
+
+	Stringbuffer() {
+		buffer = new char[DEFAULT_BUF_SIZE];
+		buf_size = 0;
+		current_buf_size = 0;
+	}
+
+	Stringbuffer(int buffer_size) {
+		buffer = new char[buffer_size];
+		buffer_size = 0;
+		current_buf_size = 0;
+	}
+
+	~Stringbuffer() {
+		delete[] buffer;
+	}
+
+	int get_buffer_size () {
+		return current_buf_size;
+	}
+
+	void put (char c) {
+
+		buffer[current_buf_size++] = c;
+
+		if (current_buf_size == buf_size)
+			flush();
+	}
+
+	virtual void flush()=0;
+
 };
+
 
 #endif

@@ -21,6 +21,10 @@
 /* Add your code here */ 
 #define CHAR_ARRAY_LEN 20
 
+const char O_Stream::numbers[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', \
+						'B', 'C', 'D', 'E', 'F'}; 
+
+
 O_Stream::O_Stream (BASE base) 
 {
     this->base = base;
@@ -29,9 +33,9 @@ O_Stream::O_Stream (BASE base)
 
 int O_Stream::unsigned_long_to_chararray(unsigned long number, char *char_array, int array_length) {
     
-    static char numbers[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'}; 
+    
     int i = array_length - 1;
-    char remainder;
+    int remainder;
     BASE base = this->base;
 
 /* Format
@@ -75,6 +79,8 @@ O_Stream& O_Stream::operator<< (long number)
 
     while (i < CHAR_ARRAY_LEN)
         this->put(char_array[i++]);
+    
+    return *this;
 
 }
 
@@ -88,6 +94,8 @@ O_Stream& O_Stream::operator<< (unsigned long number)
 
     while (i < CHAR_ARRAY_LEN)
         this->put(char_array[i++]);
+    
+    return *this;
 
 }
 
@@ -137,6 +145,8 @@ O_Stream& O_Stream::operator<< (void *pointer)
 
     operator<<((unsigned long)(pointer));
 
+    this->base = tmp;
+
     return *this;
 
 
@@ -144,10 +154,14 @@ O_Stream& O_Stream::operator<< (void *pointer)
 
 O_Stream& O_Stream::operator<< (char* text)
 {
-    int i = 0;
 
-    while (*text != '0')
+
+    while (*text != '0'){
         operator<<(*text);
+        text++;
+    }
+
+
     
     return *this;
 }

@@ -19,9 +19,10 @@
 #define DEFAULT_BUF_SIZE 100
 class Stringbuffer {
 private:
-	char *buffer;
+	char buffer[DEFAULT_BUF_SIZE];
 	int buf_size;
 	int current_buf_size;
+
 
 	Stringbuffer(const Stringbuffer &copy); // prevent copying
 
@@ -29,19 +30,8 @@ private:
 public:
 
 	Stringbuffer() {
-		buffer = new char[DEFAULT_BUF_SIZE];
 		buf_size = 0;
 		current_buf_size = 0;
-	}
-
-	Stringbuffer(int buffer_size) {
-		buffer = new char[buffer_size];
-		buffer_size = 0;
-		current_buf_size = 0;
-	}
-
-	~Stringbuffer() {
-		delete[] buffer;
 	}
 
 	int get_buffer_size () {

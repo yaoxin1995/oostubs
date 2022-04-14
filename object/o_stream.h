@@ -26,6 +26,12 @@ class O_Stream : public Stringbuffer
 private:
 	O_Stream(const O_Stream &copy); // prevent copying
 /* Add your code here */
+	/*
+	can initialize integer types in the .h; 
+	all other types have to be initialized outside the class 
+	declaration, and only once.
+	*/
+	const static char numbers[];
 	int unsigned_long_to_chararray(unsigned long number, char *char_array, int array_length);
 
 public:

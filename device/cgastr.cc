@@ -13,4 +13,8 @@
 
 #include "device/cgastr.h"
 
-/* Add your code here */ 
+void CGA_Stream::flush (){
+    if(current_buf_size)
+        print(buffer, current_buf_size, 7);
+        current_buf_size = 0;
+}

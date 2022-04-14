@@ -238,10 +238,18 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 Key Keyboard_Controller::key_hit ()
 {
 	Key invalid;  // not explicitly initialized Key objects are invalid
-/* Add your code here */ 
-/* Add your code here */ 
- 
-/* Add your code here */ 
+	bool status;
+	// Test if the outputbuffer is empty
+	do
+	{		
+		status = ctrl_port.inb();
+	}while (status && outb);
+	code = data_port.inb();
+	if((!status && auxb)){
+		if(status){
+			return gather;
+		}
+	}
 	return invalid;
 }
 

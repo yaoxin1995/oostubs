@@ -58,7 +58,13 @@ CFLAGS := $(CFLAGS) -m64 -mno-red-zone -Wall -Wno-write-strings -fno-stack-prote
 CXXFLAGS := $(CFLAGS) -Wno-non-virtual-dtor -fno-threadsafe-statics -fno-use-cxa-atexit -fno-rtti -fno-exceptions
 
 # enforce i386-pc grub variant also on EFI systems
-MKRESCUE_OPTION ?= /usr/lib/grub/i386-pc
+ifneq ($(wildcard /usr/lib/grub/i386-pc/.),)
+        MKRESCUE_OPTION ?= /usr/lib/grub/i386-pc
+else ifneq ($(wildcard /usr/share/grub2/i386-pc/.),)
+        MKRESCUE_OPTION ?= /usr/share/grub2/i386-pc
+else
+        MKRESCUE_OPTION ?=
+endif
 
 ifneq ($(shell which grub-mkrescue 2> /dev/null),)
 MKRESCUE = grub-mkrescue $(MKRESCUE_OPTION)

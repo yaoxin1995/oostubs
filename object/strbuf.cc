@@ -13,6 +13,14 @@
 /* (pure) virtual method that must be defined by derived classes.            */
 /*****************************************************************************/
 
-#include "object/strbuf.h"
+#ifndef __strbuf_include__
+#define __strbuf_include__
+
+class Stringbuffer {
+private:
+	Stringbuffer(const Stringbuffer &copy); // prevent copying
 
 /* Add your code here */ 
+};
+
+#endif

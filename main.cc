@@ -1,6 +1,7 @@
 /* Add your code here */ 
 #include "machine/cgascr.h"
 #include "device/cgastr.h"
+#include "machine/keyctrl.h"
 
 #define TEXTLEN 1000
 
@@ -90,6 +91,22 @@ static void test_cga_Stream()
 
 }
 
+static void test_key_ctrl(){
+	CGA_Stream cout;
+    Keyboard_Controller kctrl;
+    Key key;
+
+    kctrl.set_repeat_rate(31, 0);
+        while(true){
+            key = kctrl.key_hit();
+            if (key.valid()) {
+                cout << key.ascii() << " ";
+                cout.flush();
+            }
+        }
+}
+
+
 
 int main()
 {
@@ -97,8 +114,8 @@ int main()
 	//test_sga_screen();
  
 /* Add your code here */ 
-
 	test_cga_Stream();
+	test_key_ctrl();
  
 /* Add your code here */ 
  

@@ -22,10 +22,16 @@ class CGA_Stream: public CGA_Screen, public O_Stream
 private:
       CGA_Stream(CGA_Stream &copy); // prevent copying
 public:
-      CGA_Stream(){}
-      ~CGA_Stream(){      
+      CGA_Stream()
+      {
+
+      }
+
+      ~CGA_Stream()
+      {      
             flush();
       }
+      
       virtual void flush() override;
 
 };

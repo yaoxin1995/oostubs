@@ -1,7 +1,6 @@
 {
     "files.associations": {
-        "cstring": "cpp",
-        "cstdlib": "cpp",
-        "cstddef": "cpp"
+        "limits": "cpp",
+        "type_traits": "cpp"
     }
 }

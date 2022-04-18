@@ -19,3 +19,206 @@
 #include "object/o_stream.h"
 
 /* Add your code here */ 
+#define CHAR_ARRAY_LEN 20
+
+const char O_Stream::numbers[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', \
+						'B', 'C', 'D', 'E', 'F'}; 
+
+
+O_Stream::O_Stream (BASE base) 
+{
+    this->base = base;
+}
+
+
+int O_Stream::unsigned_long_to_chararray(unsigned long number, char *char_array, int array_length) {
+    
+    
+    int i = array_length - 1;
+    int remainder;
+    BASE base = this->base;
+
+/* Format
+    Binary format：0bXXXX
+    OCT: 0XXXX
+    HEX: 0xXXXX
+    DEX  XX
+*/
+    do {
+        remainder = number % base;
+        number /= base;
+        char_array[i--] = numbers[remainder];
+    } while (number);
+
+    if (base == HEX)
+        char_array[i--] = 'x';
+    
+    if (base == BIN)
+        char_array[i--] = 'b';
+    
+    if (base != DEC) {
+        char_array[i] = '0';
+        return i;
+
+    }
+
+    return ++i;
+}
+
+
+O_Stream& O_Stream::operator<< (long number) 
+{
+    bool has_minus = false;
+    char char_array[CHAR_ARRAY_LEN];  // ???
+    int i = CHAR_ARRAY_LEN;
+
+    if (number < 0) {
+        has_minus = true;
+        number = -number;
+    }
+
+    i = unsigned_long_to_chararray((unsigned long)number, char_array, CHAR_ARRAY_LEN);
+
+    if (has_minus)
+        char_array[--i] = '-';
+
+    while (i < CHAR_ARRAY_LEN)
+        this->put(char_array[i++]);
+    
+    return *this;
+
+}
+
+O_Stream& O_Stream::operator<< (unsigned long number)
+{
+    char char_array[CHAR_ARRAY_LEN];  // ???
+    int i = CHAR_ARRAY_LEN;
+
+
+    i = unsigned_long_to_chararray(number, char_array, CHAR_ARRAY_LEN);
+
+    while (i < CHAR_ARRAY_LEN)
+        this->put(char_array[i++]);
+    
+    return *this;
+
+}
+
+O_Stream& O_Stream::operator<< (unsigned char c)
+{
+    return operator<<((unsigned long)c);
+}
+
+O_Stream& O_Stream::operator<< (char c)
+{
+    return operator<<((long)c);
+}
+
+O_Stream& O_Stream::operator<< (unsigned short number) 
+{
+    return operator<<((unsigned long)number);
+}
+
+O_Stream& O_Stream::operator<< (short number)
+{
+    return operator<<((long)number);
+}
+
+O_Stream& O_Stream::operator<< (unsigned int number)
+{
+    return operator<<((unsigned long)number);
+}
+
+O_Stream& O_Stream::operator<< (int number)
+{
+    return operator<<((long)number);
+}
+
+
+/**
+ * @brief 
+ * print the pointer value, i.e, get the memory address (location) that the pointer points to.
+ * for example, int *a = b; this func should print the address of variable b
+ * @param pointer 
+ * @return O_Stream& 
+ */
+O_Stream& O_Stream::operator<< (void *pointer) 
+{
+    BASE tmp = this->base;
+
+    this->base = HEX;
+
+    operator<<((unsigned long)(pointer));
+
+    this->base = tmp;
+
+    return *this;
+
+
+}
+
+O_Stream& O_Stream::operator<< (char* text)
+{
+
+
+    while (*text != '\0'){
+        this->put(*text);
+        text++;
+    }
+
+
+    
+    return *this;
+}
+
+/**
+ * @brief 
+
+ * @param fkt 
+ * @return O_Stream& 
+ */
+O_Stream& O_Stream::operator<< (O_Stream& (*fkt) (O_Stream&))
+{   
+    /*
+    * this is a pointer, and *this is a dereferenced pointer.
+    * If you had a function that returned this, it would be a pointer to the 
+    * current object, while a function that returned *this would be a "clone" of 
+    * the current object, allocated on the stack -- unless you have specified the return 
+    * type of the method to return a reference.
+    */
+    return (*fkt)(*this);
+}
+
+// Inserts a new-line character and flushes the stream
+O_Stream& endl (O_Stream& os) 
+{
+    os.put('\n');
+    os.flush();
+    return os;
+}
+
+O_Stream& bin (O_Stream& os)
+{
+    os.base = O_Stream::BIN;
+    return os;
+}
+
+O_Stream& oct (O_Stream& os)
+{
+    os.base = O_Stream::OCT;
+    return os;
+}
+
+O_Stream& dec (O_Stream& os)
+{
+    os.base = O_Stream::DEC;
+    return os;
+}
+
+O_Stream& hex (O_Stream& os)
+{
+    os.base = O_Stream::HEX;
+    return os;
+}
+
+

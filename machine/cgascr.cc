@@ -76,7 +76,7 @@ void CGA_Screen::getpos (int &x, int &y)
 
 void memcpy(void * dest, const void * source, size_t num)
 {
-	for(int i = 0; i < num; i++) 
+	for(size_t i = 0; i < num; i++) 
 	{
 		*((char*)dest+i) = *((char*)source+i);
 	}

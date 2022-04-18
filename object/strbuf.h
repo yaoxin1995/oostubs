@@ -30,22 +30,28 @@ protected:
 /* Add your code here */ 
 public:
 
-	Stringbuffer() {
+	Stringbuffer() 
+	{
 		current_buf_size = 0;
 	}
 
-	int get_buffer_size () {
+	int get_buffer_size () 
+	{
 		return current_buf_size;
+	}
+
+	void reset_buffer_size ()
+	{
+		current_buf_size = 0;
 	}
 
 	void put (char c) {
 
 		buffer[current_buf_size++] = c;
 
-		if (current_buf_size == DEFAULT_BUF_SIZE) {
+		if (current_buf_size == DEFAULT_BUF_SIZE)
 			flush();
-			current_buf_size = 0;
-		}
+		
 
 	}
 

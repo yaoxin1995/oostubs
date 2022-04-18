@@ -42,6 +42,7 @@ int O_Stream::unsigned_long_to_chararray(unsigned long number, char *char_array,
     Binary format：0bXXXX
     OCT: 0XXXX
     HEX: 0xXXXX
+    DEX  XX
 */
     do {
         remainder = number % base;
@@ -55,9 +56,13 @@ int O_Stream::unsigned_long_to_chararray(unsigned long number, char *char_array,
     if (base == BIN)
         char_array[i--] = 'b';
     
-    char_array[i] = 0;
+    if (base != DEC) {
+        char_array[i] = '0';
+        return i;
 
-    return i;
+    }
+
+    return ++i;
 }
 
 
@@ -156,8 +161,8 @@ O_Stream& O_Stream::operator<< (char* text)
 {
 
 
-    while (*text != '0'){
-        operator<<(*text);
+    while (*text != '\0'){
+        this->put(*text);
         text++;
     }
 
@@ -184,10 +189,11 @@ O_Stream& O_Stream::operator<< (O_Stream& (*fkt) (O_Stream&))
     return (*fkt)(*this);
 }
 
-
+// Inserts a new-line character and flushes the stream
 O_Stream& endl (O_Stream& os) 
 {
     os.put('\n');
+    os.flush();
     return os;
 }
 
@@ -205,7 +211,7 @@ O_Stream& oct (O_Stream& os)
 
 O_Stream& dec (O_Stream& os)
 {
-    os.base = O_Stream::OCT;
+    os.base = O_Stream::DEC;
     return os;
 }
 

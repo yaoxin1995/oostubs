@@ -58,6 +58,7 @@ static void test_cga_Stream()
 	int *pointer = (int *)0x111;
 
 	//print unsigned char c
+
 	cout << "this is char value: " << char_value << endl;
 
 	cout << "this is unsigned char value: " << unsigned_char_value << endl;
@@ -77,13 +78,14 @@ static void test_cga_Stream()
 	cout << "this pointer value (0x111): " << pointer << endl;
 
 
-	cout << "changed the base to binary and print the value 10: " << bin << 10;
+	cout << "changed the base to binary and print the value 10: " << bin << 10 << endl;
 
-	cout << "changed the base to octar and print the value 10: " << oct << 10;
+	cout << "changed the base to octar and print the value 10: " << oct << 10 << endl;
 
-	cout << "changed the base to dec and print the value 10: " << dec << 10;
+	cout << "changed the base to dec and print the value 10: " << dec << 10 << endl;
 
-	cout << "changed the base to hex and print the value 10: " << oct << 10;
+	cout << "changed the base to hex and print the value 10: " << hex << 10 << endl;
+
 
 
 }
@@ -92,7 +94,7 @@ static void test_cga_Stream()
 int main()
 {
 /* Add your code here */
-	test_sga_screen();
+	//test_sga_screen();
  
 /* Add your code here */ 
 

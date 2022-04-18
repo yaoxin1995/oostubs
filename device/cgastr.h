@@ -24,9 +24,9 @@ private:
 public:
       CGA_Stream(){}
       ~CGA_Stream(){      
-            void flush();
+            flush();
       }
-      virtual void flush();
+      virtual void flush() override;
 
 };
 

@@ -19,18 +19,18 @@
 #define DEFAULT_BUF_SIZE 100
 class Stringbuffer {
 private:
-	char buffer[DEFAULT_BUF_SIZE];
-	int buf_size;
+
 	int current_buf_size;
 
 
 	Stringbuffer(const Stringbuffer &copy); // prevent copying
 
+protected:
+	char buffer[DEFAULT_BUF_SIZE];
 /* Add your code here */ 
 public:
 
 	Stringbuffer() {
-		buf_size = 0;
 		current_buf_size = 0;
 	}
 
@@ -42,8 +42,11 @@ public:
 
 		buffer[current_buf_size++] = c;
 
-		if (current_buf_size == buf_size)
+		if (current_buf_size == DEFAULT_BUF_SIZE) {
 			flush();
+			current_buf_size = 0;
+		}
+
 	}
 
 	virtual void flush()=0;

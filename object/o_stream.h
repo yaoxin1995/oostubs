@@ -21,12 +21,70 @@
 
 #include "object/strbuf.h"
 
-class O_Stream
-/* Add your code here */ 
+class O_Stream : public Stringbuffer
 {
 private:
 	O_Stream(const O_Stream &copy); // prevent copying
-/* Add your code here */ 
+/* Add your code here */
+	/*
+	can initialize integer types in the .h; 
+	all other types have to be initialized outside the class 
+	declaration, and only once.
+	*/
+	const static char numbers[];
+	int unsigned_long_to_chararray(unsigned long number, char *char_array, int array_length);
+
+public:
+
+	enum BASE {
+		DEC = 10, // 10
+		HEX = 16, // 16
+		OCT = 8, // 8
+		BIN = 2 // 2
+	};
+
+	O_Stream(BASE base = DEC);
+
+	/* Appending the character c to the collected characters*/
+	O_Stream& operator<< (unsigned char c);
+	O_Stream& operator<< (char c);
+
+	/*Append the number number in the selected number system*/
+	O_Stream& operator<< (unsigned short number);
+	O_Stream& operator<< (short number);
+	O_Stream& operator<< (unsigned int number);
+	O_Stream& operator<< (int number);
+	O_Stream& operator<< (unsigned long number);
+	O_Stream& operator<< (long number);
+
+	/*Appending the pointer value pointer in hexadecimal system*/
+	O_Stream& operator<< (void *pointer);
+
+	/*Append the null-terminated string text (without the null-termination)*/
+	O_Stream& operator<< (char *text);
+
+	/*Call of the manipulator function fkt*/
+	O_Stream& operator<< (O_Stream& (*fkt) (O_Stream&));
+
+	/*
+	 * A friend function is a function that is specified outside a class but has 
+	 * the ability to access the class members’ protected and private data. A friend can 
+	 * be a member’s function, function template, or function, or a class or class template, 
+	 * in which case the entire class and all of its members are friends.
+	 */
+
+	friend O_Stream& endl (O_Stream& os);
+
+	friend O_Stream& bin (O_Stream& os);
+
+	friend O_Stream& oct (O_Stream& os);
+
+	friend O_Stream& dec (O_Stream& os);
+
+	friend O_Stream& hex (O_Stream& os);
+
+ protected:
+	BASE base;
 };
 
 /*---------------------------------------------------------------------------*/
@@ -43,18 +101,17 @@ private:
 /*---------------------------------------------------------------------------*/
 
 // ENDL: inserts a newline in the output and flushes the buffer
-/* Add your code here */ 
+O_Stream& endl (O_Stream& os);
 
 // BIN: selects the binary number system
-/* Add your code here */ 
+O_Stream& bin (O_Stream& os);
 
 // OCT: selects the octal number system
-/* Add your code here */ 
+O_Stream& oct (O_Stream& os);
 
 // DEC: selects the decimal number system
-/* Add your code here */ 
+O_Stream& dec (O_Stream& os);
 
 // HEX: selects the hexadecimal number system
-/* Add your code here */ 
-
+O_Stream& hex (O_Stream& os);
 #endif

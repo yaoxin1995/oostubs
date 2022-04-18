@@ -20,6 +20,8 @@ class Stringbuffer {
 private:
 	Stringbuffer(const Stringbuffer &copy); // prevent copying
 
+protected:
+	char buffer[DEFAULT_BUF_SIZE];
 /* Add your code here */ 
 };
 

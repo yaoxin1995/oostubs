@@ -14,4 +14,19 @@ git rebase -i origin/branch_name~4 branch_name
 git push origin +branch_name
 
 ```
+## How to run oostubs
++ Compile oostubs
+```
+make
+```
++ Execute oostubs
+```
+make qemu
+```
++ Debug oostubs
+```
+make qemu-gdb
+
+make gdb
+```
 

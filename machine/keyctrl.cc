@@ -11,7 +11,8 @@
 /* INCLUDES */
 
 #include "machine/keyctrl.h"
- 
+#define  DEFAULT_SPEED 5
+#define DEFAULT_DELAY 3
 /* STATIC MEMBERS */
 
 unsigned char Keyboard_Controller::normal_tab[] = {
@@ -238,18 +239,21 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 Key Keyboard_Controller::key_hit ()
 {
 	Key invalid;  // not explicitly initialized Key objects are invalid
-	bool status;
+	int status;
 	// Test if the outputbuffer is empty
 	do
 	{		
 		status = ctrl_port.inb();
-	}while (status && outb);
-	code = data_port.inb();
-	if((!status && auxb)){
-		if(status){
-			return gather;
-		}
+	}while (!(status & outb));
+	code = data_port.inb();	
+
+	if(key_decoded()){
+		if((status & auxb)){
+		return invalid;
 	}
+		return gather;
+	}
+
 	return invalid;
 }
 
@@ -292,15 +296,19 @@ void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 	} while ((status & inpb) != 0);
 
 	data_port.outb(kbd_cmd::set_speed); //send command into port
+
 	do {
 		status = data_port.inb(); 
 	} while(status != kbd_reply::ack);	//wait for ACK after sending command
- 	//set parameter*(after sending the user data. )
-	data_port.outb(speed | delay << 4);
+ 	
+	 //set parameter after sending the user data. 
+	data_port.outb((speed & DEFAULT_SPEED) | (delay & DEFAULT_DELAY) << 5);  //avoid invalid delay or speed
+
 	do {
 		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending data
+	} while(status != kbd_reply::ack);	//wait for ACK after sending data.
 }
+
 // SET_LED: sets or clears the specified LED
 
 void Keyboard_Controller::set_led (char led, bool on)

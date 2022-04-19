@@ -1,6 +1,17 @@
 {
     "files.associations": {
+<<<<<<< HEAD
+<<<<<<< HEAD
+        "cstring": "cpp",
+        "cstdlib": "cpp",
+        "cstddef": "cpp"
+=======
         "limits": "cpp",
         "type_traits": "cpp"
+>>>>>>> origin/yaoxin-lab1-Stringbuffer-O_Stream
+=======
+        "limits": "cpp",
+        "type_traits": "cpp"
+>>>>>>> a014838670c328b004ac3d04a693568cd158f910
     }
 }

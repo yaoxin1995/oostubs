@@ -11,7 +11,8 @@
 /* INCLUDES */
 
 #include "machine/keyctrl.h"
- 
+#define  DEFAULT_SPEED 5
+#define DEFAULT_DELAY 3
 /* STATIC MEMBERS */
 
 unsigned char Keyboard_Controller::normal_tab[] = {
@@ -301,7 +302,7 @@ void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 	} while(status != kbd_reply::ack);	//wait for ACK after sending command
  	
 	 //set parameter after sending the user data. 
-	data_port.outb((speed & 31) | (delay & 3) << 5);  //avoid invalid delay or speed
+	data_port.outb((speed & DEFAULT_SPEED) | (delay & DEFAULT_DELAY) << 5);  //avoid invalid delay or speed
 
 	do {
 		status = data_port.inb(); 

@@ -96,7 +96,7 @@ static void test_key_ctrl(){
     Keyboard_Controller kctrl;
     Key key;
 
-    kctrl.set_repeat_rate(31, 0);
+    kctrl.set_repeat_rate(31, 03);
         while(true){
             key = kctrl.key_hit();
             if (key.valid()) {

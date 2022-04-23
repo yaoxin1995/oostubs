@@ -24,7 +24,7 @@ void PIC::allow(int interrupt_device){
         imr_master.outb(imr);
     }
     else{                                                   //slave PIC
-        imr =  imr_master.inb() & ~(1 << interrupt_device - 8);
+        imr =  imr_master.inb() & ~(1 << (interrupt_device - 8));
         imr_slave.outb(imr);
     }
 
@@ -38,7 +38,7 @@ void PIC::forbid(int interrupt_device){
         imr_master.outb(imr);
     }
     else{                                                   //slave PIC
-        imr =  imr_master.inb() | ~(1 << interrupt_device - 8);
+        imr =  imr_master.inb() | ~(1 << (interrupt_device - 8));
         imr_slave.outb(imr);
     }
 
@@ -54,7 +54,7 @@ bool PIC::is_masked(int interrupt_device){
     }
     else{
         imr =  imr_master.inb();
-        return ( imr & (1 << interrupt_device -8));
+        return ( imr & (1 << (interrupt_device -8)));
 
     }
 }

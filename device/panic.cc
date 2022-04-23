@@ -7,6 +7,15 @@
 /*---------------------------------------------------------------------------*/
 /* Default interrupt handler.                                                */
 /*****************************************************************************/
-/* Add your code here */ 
-/* Add your code here */ 
+#include "device/panic.h"
+
+
+void Panic::trigger(){
+    cout << "Error, system stop!" << endl;
+    cout.flush();
+    cpu.halt();
+}
+
+
+
  

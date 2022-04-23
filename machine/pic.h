@@ -21,16 +21,19 @@
 // ICW : Initialization Control Word 
 // OCW : Operation Control Word
 //
-class PIC {
+class PIC 
+
+{
 private:
 	PIC(const PIC &copy); // prevent copying
 	IO_Port imr_master, imr_slave;
+
 public:
 	PIC(): imr_master(0x21), imr_slave(0xa1){};
 	enum {
     timer    = 0,
     keyboard = 1
-};
+   };
 
 
 

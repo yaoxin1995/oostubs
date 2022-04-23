@@ -13,11 +13,25 @@
 #define __Plugbox_include__
 
 #include "guard/gate.h"
+#include "device/panic.h"
 
 class Plugbox {
 private:
 	Plugbox(const Plugbox &copy); // prevent copying
-/* Add your code here */ 
+	Panic panic;
+
+public:
+	Plugbox ();
+	
+	enum { 
+		timer = 32, 
+		keyboard = 33, 
+		printer = 39 
+	};
+
+	void assign (unsigned int slot, Gate& gate);
+
+	Gate& report (unsigned int slot);
 };
 
 #endif

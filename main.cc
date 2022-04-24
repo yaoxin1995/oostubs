@@ -27,7 +27,7 @@ static void test_sga_screen()
 
 	get_string(text, TEXTLEN);
 
-	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES);
+	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
 }
 
 /**
@@ -95,12 +95,14 @@ static void test_key_ctrl(){
 	CGA_Stream cout;
     Keyboard_Controller kctrl;
     Key key;
+	char a;
 
     kctrl.set_repeat_rate(31, 03);
         while(true){
             key = kctrl.key_hit();
             if (key.valid()) {
-                cout << key.ascii() << " ";
+				a = key.ascii();
+                cout << a << " ";
                 cout.flush();
             }
         }
@@ -114,7 +116,7 @@ int main()
 	//test_sga_screen();
  
 /* Add your code here */ 
-	test_cga_Stream();
+	//test_cga_Stream();
 	test_key_ctrl();
  
 /* Add your code here */ 

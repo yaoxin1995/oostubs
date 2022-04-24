@@ -17,7 +17,7 @@ void CGA_Stream::flush (){
 
     int current_buf_size = get_buffer_size();
 
-    print(buffer, current_buf_size, DEFAULT_ATTRIBUTES);
+    print(buffer, current_buf_size, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
 
     reset_buffer_size();
 }

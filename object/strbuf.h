@@ -35,6 +35,11 @@ public:
 		current_buf_size = 0;
 	}
 
+	//A class with a virtual function should also have a virtual destructor
+	virtual ~Stringbuffer(){
+
+	}
+
 	int get_buffer_size () 
 	{
 		return current_buf_size;

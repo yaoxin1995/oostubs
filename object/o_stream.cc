@@ -106,12 +106,15 @@ O_Stream& O_Stream::operator<< (unsigned long number)
 
 O_Stream& O_Stream::operator<< (unsigned char c)
 {
-    return operator<<((unsigned long)c);
+    
+    return operator<<((char)c);
 }
 
 O_Stream& O_Stream::operator<< (char c)
 {
-    return operator<<((long)c);
+    this->put(c);
+    return *this;
+
 }
 
 O_Stream& O_Stream::operator<< (unsigned short number) 

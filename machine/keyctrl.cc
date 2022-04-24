@@ -12,7 +12,7 @@
 
 #include "machine/keyctrl.h"
 #define  DEFAULT_SPEED 5
-#define DEFAULT_DELAY 3
+#define DEFAULT_DELAY 2
 /* STATIC MEMBERS */
 
 unsigned char Keyboard_Controller::normal_tab[] = {
@@ -241,17 +241,16 @@ Key Keyboard_Controller::key_hit ()
 	Key invalid;  // not explicitly initialized Key objects are invalid
 	int status;
 	// Test if the outputbuffer is empty
-	do
-	{		
-		status = ctrl_port.inb();
-	}while (!(status & outb));
-	code = data_port.inb();	
 
-	if(key_decoded()){
-		if((status & auxb)){
-		return invalid;
-	}
-		return gather;
+
+	status = ctrl_port.inb();
+
+	if (status & outb && !(status & auxb)) {
+		code = data_port.inb();	
+
+		if (key_decoded())
+			return gather;
+		
 	}
 
 	return invalid;
@@ -297,6 +296,10 @@ void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 
 	data_port.outb(kbd_cmd::set_speed); //send command into port
 
+	do{
+		status = ctrl_port.inb();
+	}while((status & inpb) != 0);    // wait for the command "set_led" been consumed by keyboard controller
+	
 	do {
 		status = data_port.inb(); 
 	} while(status != kbd_reply::ack);	//wait for ACK after sending command
@@ -320,6 +323,11 @@ void Keyboard_Controller::set_led (char led, bool on)
 	} while ((status & inpb) != 0);
 
 	data_port.outb(kbd_cmd::set_led); //send command into port
+
+	do{
+		status = ctrl_port.inb();
+	}while((status & inpb) != 0);    // wait for the command "set_led" been consumed by keyboard controller
+
 	do {
 		status = data_port.inb(); 
 	} while(status != kbd_reply::ack);	//wait for ACK after sending command
@@ -334,6 +342,12 @@ void Keyboard_Controller::set_led (char led, bool on)
 		status =
 		    ctrl_port.inb(); // wait until last command is processed
 	} while ((status & inpb) != 0);
+
+	data_port.outb(leds);
+
+	do {
+		status = data_port.inb(); 
+	} while(status != kbd_reply::ack);	//wait for ACK after sending data.
 
 	
 }

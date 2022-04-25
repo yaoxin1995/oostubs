@@ -98,14 +98,18 @@ static void test_key_ctrl(){
 	char a;
 
     kctrl.set_repeat_rate(31, 03);
-        while(true){
-            key = kctrl.key_hit();
-            if (key.valid()) {
-				a = key.ascii();
-                cout << a << " ";
-                cout.flush();
-            }
+	kctrl.set_led(4, true);
+	kctrl.set_led(2, true);
+	kctrl.set_led(1, true);
+
+    while(true){
+        key = kctrl.key_hit();
+        if (key.valid()) {
+			a = key.ascii();
+            cout << a << " ";
+            cout.flush();
         }
+    }
 }
 
 
@@ -116,8 +120,11 @@ int main()
 	//test_sga_screen();
  
 /* Add your code here */ 
-	//test_cga_Stream();
+	test_cga_Stream();
+
 	test_key_ctrl();
+
+
  
 /* Add your code here */ 
  

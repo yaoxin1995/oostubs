@@ -285,69 +285,99 @@ void Keyboard_Controller::reboot()
 //                  Allowed values are between 0 (very fast) and 31 (very
 //                  slow).
 
+/**
+* Status register:
+* Bit	mask	Name	meaning
+* 0		0x01	outb	Set when a character in the keyboard controller's output buffer is ready to be read
+* 1		0x02	inpb	Set as long as the keyboard controller has not yet picked up a character written by the CPU
+* 5		0x20	auxb	Set if the value in the output buffer came from the mouse and not from the keyboard
+* 
+* Procedure for sendng a byte to keyboard:
+* 1. make sure that the input buffer is empty ( inpb )
+* 2. write the byte (command code or user data) to the data port
+* 3. wait for wait for the command been consumed by keyboard controller
+* 4. wait for a response from the keyboard controller ( outb )
+* 5. check whether the output buffer contains the confirmation byte 0xfa (ACK)
+* 6. Note that an ACK comes back after each byte
+*
+*/
+
 void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 {
 
 	int status;
  	do {
 		status =
-		    ctrl_port.inb(); // wait until last command is processed
-	} while ((status & inpb) != 0);
+		    ctrl_port.inb(); 
+	} while (status & inpb);
 
-	data_port.outb(kbd_cmd::set_speed); //send command into port
+	data_port.outb(kbd_cmd::set_speed); 
 
 	do{
 		status = ctrl_port.inb();
-	}while((status & inpb) != 0);    // wait for the command "set_led" been consumed by keyboard controller
+	}while(status & inpb);
+
+	do {
+		status = ctrl_port.inb();
+	}while (!(status & outb));
 	
 	do {
 		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending command
+	} while((status & kbd_reply::ack) == kbd_reply::ack);
  	
-	 //set parameter after sending the user data. 
-	data_port.outb((speed & DEFAULT_SPEED) | (delay & DEFAULT_DELAY) << 5);  //avoid invalid delay or speed
+ 
+	data_port.outb((speed & DEFAULT_SPEED) | (delay & DEFAULT_DELAY) << 5);  
 
 	do {
 		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending data.
+	} while((status & kbd_reply::ack) == kbd_reply::ack);	
 }
 
 // SET_LED: sets or clears the specified LED
+/**
+* Status register:
+* Bit	mask	Name	meaning
+* 0		0x01	outb	Set when a character in the keyboard controller's output buffer is ready to be read
+* 1		0x02	inpb	Set as long as the keyboard controller has not yet picked up a character written by the CPU
+* 5		0x20	auxb	Set if the value in the output buffer came from the mouse and not from the keyboard
+* 
+* Procedure for sendng a byte to keyboard:
+* 1. make sure that the input buffer is empty ( inpb )
+* 2. write the byte (command code or user data) to the data port
+* 3. wait for wait for the command been consumed by keyboard controller
+* 4. wait for a response from the keyboard controller ( outb )
+* 5. check whether the output buffer contains the confirmation byte 0xfa (ACK)
+* 6. Note that an ACK comes back after each byte
+*
+*/
 
 void Keyboard_Controller::set_led (char led, bool on)
 {
 	int status;
  	do {
 		status =
-		    ctrl_port.inb(); // wait until last command is processed
-	} while ((status & inpb) != 0);
+		    ctrl_port.inb(); 
+	} while (status & inpb);
 
-	data_port.outb(kbd_cmd::set_led); //send command into port
+	data_port.outb(kbd_cmd::set_led); 
 
 	do{
 		status = ctrl_port.inb();
-	}while((status & inpb) != 0);    // wait for the command "set_led" been consumed by keyboard controller
+	}while(status & inpb);
+
 
 	do {
-		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending command
-	if(on){
-		leds |= leds;
+		status = ctrl_port.inb();
+	}while (!(status & outb));
+
+	status = data_port.inb();
+	if ((status & kbd_reply::ack) == kbd_reply::ack) {
+		if(on)
+			leds |= leds;
+		else
+			leds &= leds;
+		
+		data_port.outb(leds); //send command into port
 	}
-	else{
-		leds &= leds;
-	}
-
- 	do {
-		status =
-		    ctrl_port.inb(); // wait until last command is processed
-	} while ((status & inpb) != 0);
-
-	data_port.outb(leds);
-
-	do {
-		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending data.
-
 	
 }

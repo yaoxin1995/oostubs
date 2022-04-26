@@ -295,7 +295,7 @@ void Keyboard_Controller::reboot()
 * Procedure for sendng a byte to keyboard:
 * 1. make sure that the input buffer is empty ( inpb )
 * 2. write the byte (command code or user data) to the data port
-* 3. wait for wait for the command been consumed by keyboard controller
+* 3. wait for the command been consumed by keyboard controller
 * 4. wait for a response from the keyboard controller ( outb )
 * 5. check whether the output buffer contains the confirmation byte 0xfa (ACK)
 * 6. Note that an ACK comes back after each byte
@@ -323,14 +323,14 @@ void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 	
 	do {
 		status = data_port.inb(); 
-	} while((status & kbd_reply::ack) == kbd_reply::ack);
+	} while((status & kbd_reply::ack) != kbd_reply::ack);
  	
  
 	data_port.outb((speed & DEFAULT_SPEED) | (delay & DEFAULT_DELAY) << 5);  
 
 	do {
 		status = data_port.inb(); 
-	} while((status & kbd_reply::ack) == kbd_reply::ack);	
+	} while((status & kbd_reply::ack) != kbd_reply::ack);	
 }
 
 // SET_LED: sets or clears the specified LED

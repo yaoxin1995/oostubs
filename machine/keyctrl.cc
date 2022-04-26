@@ -378,6 +378,11 @@ void Keyboard_Controller::set_led (char led, bool on)
 			leds &= leds;
 		
 		data_port.outb(leds); //send command into port
+
+	do {
+		status = data_port.inb(); 
+	} while((status & kbd_reply::ack) != kbd_reply::ack);	
+
 	}
 	
 }

@@ -11,8 +11,12 @@
 /* INCLUDES */
 
 #include "machine/keyctrl.h"
+#include "machine/cgascr.h"
+#include "device/cgastr.h"
  
 /* STATIC MEMBERS */
+#define  DEFAULT_SPEED 31
+#define DEFAULT_DELAY 3
 
 unsigned char Keyboard_Controller::normal_tab[] = {
     0,   0,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 225, 39,   '\b',
@@ -217,7 +221,9 @@ void Keyboard_Controller::get_ascii_code()
 // KEYBOARD_CONTROLLER: keyboard initialization: disables all LEDs and
 //                      sets the repeat rate to maximum.
 
-Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
+CGA_Stream cout;
+
+Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60), leds(0)
 {
 	// disable all LEDs (many PCs enable Num Lock during the boot process)
 	set_led(led::caps_lock, false);
@@ -238,13 +244,26 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 Key Keyboard_Controller::key_hit ()
 {
 	Key invalid;  // not explicitly initialized Key objects are invalid
-	bool decoded = false; // Decodierung abgeschlossen?
+	int status ;
+	bool decoded = 0;
+	do{
+		status = ctrl_port.inb();
+	}while((status & outb) == 0); 
+	
 	while (!decoded && (ctrl_port.inb() & outb)) { //Zeichen steht in Ausgabepuffer bereit
 		code = data_port.inb();
 		decoded = key_decoded();
 	}
- 	if (decoded) return gather;
+	
+
+	if (status & auxb) {
+		return invalid;		
+	}
+
+	if (decoded) return gather;
+	
 	else return invalid;
+	
 	return invalid;
 }
 
@@ -279,26 +298,31 @@ void Keyboard_Controller::reboot()
 
 void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 {
-/* Add your code here */ 
- 
-/* Add your code here */ 
-  int status;
-  do
-   { status = ctrl_port.inb ();      // warten, bis das letzte Kommando
-   } while ((status & inpb) != 0);   // verarbeitet wurde.
+	int status;
+ 	do {
+		status = ctrl_port.inb(); // wait until last command is processed
+	} while ((status & inpb) != 0);
 
-  data_port.outb(kbd_cmd::set_speed); // Befehl senden.
-  // Auf ACK warten und es lesen.
-  do
-   { status = data_port.inb ();
-   } while (status != kbd_reply::ack); 
+	data_port.outb(kbd_cmd::set_speed); //send command into port
 
-  data_port.outb(speed | (delay << 4)); // Daten senden.
+	do{
+		status = ctrl_port.inb();
+	}while((status & outb) == 0);    // wait for the command been consumed by keyboard controller
+	
+	//wait for ACK after sending command
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
 
-  // Auf ACK warten und es lesen.
-  do
-   { status = data_port.inb ();
-   } while (status != kbd_reply::ack); 
+ 	
+	 //set parameter 
+	data_port.outb((speed & DEFAULT_SPEED) | (delay & DEFAULT_DELAY) << 5);  //avoid invalid delay or speed
+
+	do {
+		status = ctrl_port.inb(); 			// wait until outputbuffer is empty
+	} while ((status & outb) == 0);
+
+	//wait for ACK after sending data.
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
+
  
 }
 
@@ -307,27 +331,30 @@ void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 void Keyboard_Controller::set_led (char led, bool on)
 {
 
-  int status;
-  do
-   { status = ctrl_port.inb ();      // warten, bis das letzte Kommando
-   } while ((status & inpb) != 0);   // verarbeitet wurde.
+	int status;
+	
+	do
+	{ status = ctrl_port.inb ();     
+	} while ((status & inpb) != 0); 
 
-  data_port.outb(kbd_cmd::set_led); // Befehl senden.
-  // Auf ACK warten und es lesen.
-  do
-   { status = data_port.inb ();
-   } while (status != kbd_reply::ack); 
+	data_port.outb(kbd_cmd::set_led); 
+	do
+	{ status = ctrl_port.inb();
+	}while((status & outb) == 0);    // wait for the command been consumed by keyboard controller
+	
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
+	
+	// Bit in leds set/reset
+	if (on){
+		leds = leds | led;}
+	else{
+		leds = leds & ~led;}
 
-  // Bit in leds setzen/zuruecksetzen.
-  if (on)
-    leds |= led;
-  else
-    leds &= ~led;
+	data_port.outb(leds); 
+	do
+	{ status = ctrl_port.inb();
+	}while((status & outb) == 0);    // wait for the command been consumed by keyboard controller
 
-  data_port.outb(leds); // Daten senden.
-  // Auf ACK warten und es lesen.
-  do
-   { status = data_port.inb ();
-   } while (status != kbd_reply::ack); 
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
  
 }

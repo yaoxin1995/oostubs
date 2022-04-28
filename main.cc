@@ -2,6 +2,7 @@
 #include "machine/cgascr.h"
 #include "device/cgastr.h"
 #include "machine/keyctrl.h"
+
 #define TEXTLEN 1000
 
 
@@ -19,15 +20,15 @@ static void get_string(char* str, int size)
 }
 
 
-static void test_sga_screen() 
-{
-	CGA_Screen screen;
-	char text[TEXTLEN] = {};
+// static void test_sga_screen() 
+// {
+// 	CGA_Screen screen;
+// 	char text[TEXTLEN] = {};
 
-	get_string(text, TEXTLEN);
+// 	get_string(text, TEXTLEN);
 
-	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
-}
+// 	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
+// }
 
 /**
  * 
@@ -92,32 +93,24 @@ static void test_cga_Stream()
 
 static void test_key_ctrl(){
 	CGA_Stream cout;
-	cout << "-1 " << bin << 10 << endl;
     Keyboard_Controller kctrl;
     Key key;
 	char a;
-cout << "c0 " << bin << 10 << endl;
-    kctrl.set_repeat_rate(0, 0);
-		cout << "c1 " << bin << 10 << endl;
-	kctrl.set_led(4, true);
-		cout << "2 " << bin << 10 << endl;
-	kctrl.set_led(2, true);
-		cout << "3 " << bin << 10 << endl;
-	kctrl.set_led(1, true);
-	cout << "4 " << bin << 10 << endl;
-    while(true){
-        key = kctrl.key_hit();
-		//cout << "5 " << bin << 10 << endl;
-        if (key.valid()) {
-			cout << "6 " << bin << 10 << endl;
+
+	kctrl.set_led(1, 1);
+	kctrl.set_led(2, 1);
+	kctrl.set_led(4, 1);
+    kctrl.set_repeat_rate(20, 3);
+	while(true){
+
+		key = kctrl.key_hit();
+		if (key.valid()) {
 			a = key.ascii();
-			cout << "7 " << bin << 10 << endl;
-            cout << a << endl;
-
-        }
-    }
+			cout << a << " ";
+			cout.flush();
+		}
+	}
 }
-
 
 
 int main()
@@ -127,10 +120,7 @@ int main()
  
 /* Add your code here */ 
 	test_cga_Stream();
-
 	test_key_ctrl();
-
-
  
 /* Add your code here */ 
  

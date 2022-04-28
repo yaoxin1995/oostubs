@@ -14,3 +14,9 @@
 #include "device/cgastr.h"
 
 /* Add your code here */ 
+void CGA_Stream::flush() {
+  if (size) {
+    print(buffer, size, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
+    size = 0;
+  }
+}

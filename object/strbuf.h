@@ -21,6 +21,22 @@ private:
 	Stringbuffer(const Stringbuffer &copy); // prevent copying
 
 /* Add your code here */ 
+protected:
+  	enum {
+    	BUFFER_SIZE = 1024
+  	};
+  	char buffer[BUFFER_SIZE];
+
+  	int size;
+
+
+
+public:
+  Stringbuffer() : size(0) {}
+
+  void put(char c);
+
+  virtual void flush() = 0;
 };
 
 #endif

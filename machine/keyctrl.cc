@@ -238,10 +238,13 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 Key Keyboard_Controller::key_hit ()
 {
 	Key invalid;  // not explicitly initialized Key objects are invalid
-/* Add your code here */ 
-/* Add your code here */ 
- 
-/* Add your code here */ 
+	bool decoded = false; // Decodierung abgeschlossen?
+	while (!decoded && (ctrl_port.inb() & outb)) { //Zeichen steht in Ausgabepuffer bereit
+		code = data_port.inb();
+		decoded = key_decoded();
+	}
+ 	if (decoded) return gather;
+	else return invalid;
 	return invalid;
 }
 
@@ -279,6 +282,23 @@ void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 /* Add your code here */ 
  
 /* Add your code here */ 
+  int status;
+  do
+   { status = ctrl_port.inb ();      // warten, bis das letzte Kommando
+   } while ((status & inpb) != 0);   // verarbeitet wurde.
+
+  data_port.outb(kbd_cmd::set_speed); // Befehl senden.
+  // Auf ACK warten und es lesen.
+  do
+   { status = data_port.inb ();
+   } while (status != kbd_reply::ack); 
+
+  data_port.outb(speed | (delay << 4)); // Daten senden.
+
+  // Auf ACK warten und es lesen.
+  do
+   { status = data_port.inb ();
+   } while (status != kbd_reply::ack); 
  
 }
 
@@ -286,8 +306,28 @@ void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 
 void Keyboard_Controller::set_led (char led, bool on)
 {
-/* Add your code here */ 
- 
-/* Add your code here */ 
+
+  int status;
+  do
+   { status = ctrl_port.inb ();      // warten, bis das letzte Kommando
+   } while ((status & inpb) != 0);   // verarbeitet wurde.
+
+  data_port.outb(kbd_cmd::set_led); // Befehl senden.
+  // Auf ACK warten und es lesen.
+  do
+   { status = data_port.inb ();
+   } while (status != kbd_reply::ack); 
+
+  // Bit in leds setzen/zuruecksetzen.
+  if (on)
+    leds |= led;
+  else
+    leds &= ~led;
+
+  data_port.outb(leds); // Daten senden.
+  // Auf ACK warten und es lesen.
+  do
+   { status = data_port.inb ();
+   } while (status != kbd_reply::ack); 
  
 }

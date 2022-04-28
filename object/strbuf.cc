@@ -16,3 +16,12 @@
 #include "object/strbuf.h"
 
 /* Add your code here */ 
+void Stringbuffer::put(char c) {
+    if (size == BUFFER_SIZE - 1) {
+        flush();
+        size = 0;
+    }
+
+    buffer[size] = c;
+    ++size;
+}

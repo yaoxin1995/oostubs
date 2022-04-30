@@ -2,21 +2,36 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         C G A _ S T R E A M                               */
+/*                                 P A N I C                                 */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The CGA_Stream class allows to print different data types as text strings */
-/* to a PC's CGA screen.                                                     */
-/* For attributes/colors and cursor positioning use the methods of class     */
-/* CGA_Screen.                                                               */
+/* Default interrupt handler.                                                */
 /*****************************************************************************/
 
-#include "device/cgastr.h"
+#ifndef __panic_include__
+#define __panic_include__
 
+/* INCLUDES */
+#include "guard/gate.h"
+#include "device/cgastr.h"
+#include "machine/cpu.h"
+
+
+class Panic : public Gate
 /* Add your code here */ 
-void CGA_Stream::flush() {
-  if (size) {
-    print(buffer, size, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
-    size = 0;
-  }
-}
+{
+private:
+	Panic (const Panic &copy); // prevent copying
+	
+	CPU cpu;
+	CGA_Stream cout;
+
+public:
+    Panic (){}
+	
+//this method is used to throw out an error message and stop the cpu
+	virtual void trigger() override;
+
+};
+
+#endif

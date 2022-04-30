@@ -2,27 +2,21 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         A P P L I C A T I O N                             */
+/*                                  G A T E                                  */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The Application class defines the (only) application for OOStuBS.         */
+/* Class of objects that handle interrupts.                                  */
 /*****************************************************************************/
 
-/* INCLUDES */
+#ifndef __Gate_include__
+#define __Gate_include__
 
+class Gate{
+public:
+    
+    Gate(){}
+    virtual void trigger() = 0;
 
+};
 
-#include "user/appl.h"
-#include "device/cgastr.h"
-/* Add your code here */ 
- 
-/* GLOBAL VARIABLES */
-
-extern CGA_Stream kout;
-/* Add your code here */ 
- 
-void Application::action()
-{
-/* Add your code here */ 
- 
-}
+#endif

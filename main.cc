@@ -20,6 +20,7 @@ static void get_string(char* str, int size)
 }
 
 
+<<<<<<< HEAD
 // static void test_sga_screen() 
 // {
 // 	CGA_Screen screen;
@@ -29,6 +30,17 @@ static void get_string(char* str, int size)
 
 // 	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
 // }
+=======
+static void test_sga_screen() 
+{
+	CGA_Screen screen;
+	char text[TEXTLEN] = {};
+
+	get_string(text, TEXTLEN);
+
+	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES);
+}
+>>>>>>> origin/shiyue-task2
 
 /**
  * 

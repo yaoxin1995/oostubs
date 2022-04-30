@@ -16,10 +16,17 @@
 #ifndef __strbuf_include__
 #define __strbuf_include__
 
+#define DEFAULT_BUF_SIZE 100
 class Stringbuffer {
 private:
+
+	int current_buf_size;
+
+
 	Stringbuffer(const Stringbuffer &copy); // prevent copying
 
+protected:
+	char buffer[DEFAULT_BUF_SIZE];
 /* Add your code here */ 
 protected:
   	enum {

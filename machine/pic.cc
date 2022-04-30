@@ -24,21 +24,22 @@ void PIC::allow(int interrupt_device){
         imr_master.outb(imr);
     }
     else{                                                   //slave PIC
-        imr =  imr_master.inb() & ~(1 << (interrupt_device - 8));
+        imr =  imr_slave.inb() & ~(1 << (interrupt_device - 8));
         imr_slave.outb(imr);
     }
 
 }
 
+//  OCW 1 的某一位置1 代表该处的 interrupt 被屏蔽
 void PIC::forbid(int interrupt_device){
     int imr;
 
     if(interrupt_device < 8){                              // master PIC
-        imr =  imr_master.inb() | ~(1 << interrupt_device);
+        imr =  imr_master.inb() | (1 << interrupt_device);
         imr_master.outb(imr);
     }
     else{                                                   //slave PIC
-        imr =  imr_master.inb() | ~(1 << (interrupt_device - 8));
+        imr =  imr_slave.inb() | (1 << (interrupt_device - 8));
         imr_slave.outb(imr);
     }
 
@@ -53,7 +54,7 @@ bool PIC::is_masked(int interrupt_device){
 
     }
     else{
-        imr =  imr_master.inb();
+        imr =  imr_slave.inb();
         return ( imr & (1 << (interrupt_device -8)));
 
     }

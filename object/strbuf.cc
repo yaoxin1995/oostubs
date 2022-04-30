@@ -13,14 +13,15 @@
 /* (pure) virtual method that must be defined by derived classes.            */
 /*****************************************************************************/
 
-#ifndef __strbuf_include__
-#define __strbuf_include__
-
-class Stringbuffer {
-private:
-	Stringbuffer(const Stringbuffer &copy); // prevent copying
+#include "object/strbuf.h"
 
 /* Add your code here */ 
-};
+void Stringbuffer::put(char c) {
+    if (size == BUFFER_SIZE - 1) {
+        flush();
+        size = 0;
+    }
 
-#endif
+    buffer[size] = c;
+    ++size;
+}

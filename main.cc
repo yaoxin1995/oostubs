@@ -20,15 +20,15 @@ static void get_string(char* str, int size)
 }
 
 
-static void test_sga_screen() 
-{
-	CGA_Screen screen;
-	char text[TEXTLEN] = {};
+// static void test_sga_screen() 
+// {
+// 	CGA_Screen screen;
+// 	char text[TEXTLEN] = {};
 
-	get_string(text, TEXTLEN);
+// 	get_string(text, TEXTLEN);
 
-	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES);
-}
+// 	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
+// }
 
 /**
  * 
@@ -95,17 +95,22 @@ static void test_key_ctrl(){
 	CGA_Stream cout;
     Keyboard_Controller kctrl;
     Key key;
+	char a;
 
-    kctrl.set_repeat_rate(31, 03);
-        while(true){
-            key = kctrl.key_hit();
-            if (key.valid()) {
-                cout << key.ascii() << " ";
-                cout.flush();
-            }
-        }
+	kctrl.set_led(1, 1);
+	kctrl.set_led(2, 1);
+	kctrl.set_led(4, 1);
+    kctrl.set_repeat_rate(20, 3);
+	while(true){
+
+		key = kctrl.key_hit();
+		if (key.valid()) {
+			a = key.ascii();
+			cout << a << " ";
+			cout.flush();
+		}
+	}
 }
-
 
 
 int main()

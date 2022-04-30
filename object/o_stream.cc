@@ -19,16 +19,11 @@
 #include "object/o_stream.h"
 
 /* Add your code here */ 
-#define CHAR_ARRAY_LEN 20
+#define CHAR_ARRAY_LEN 80
 
 const char O_Stream::numbers[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', \
 						'B', 'C', 'D', 'E', 'F'}; 
 
-
-O_Stream::O_Stream (BASE base) 
-{
-    this->base = base;
-}
 
 
 int O_Stream::unsigned_long_to_chararray(unsigned long number, char *char_array, int array_length) {
@@ -106,12 +101,15 @@ O_Stream& O_Stream::operator<< (unsigned long number)
 
 O_Stream& O_Stream::operator<< (unsigned char c)
 {
+    
     return operator<<((unsigned long)c);
 }
 
 O_Stream& O_Stream::operator<< (char c)
 {
-    return operator<<((long)c);
+    this->put(c);
+    return *this;
+
 }
 
 O_Stream& O_Stream::operator<< (unsigned short number) 
@@ -133,6 +131,12 @@ O_Stream& O_Stream::operator<< (int number)
 {
     return operator<<((long)number);
 }
+
+
+
+
+
+
 
 
 /**
@@ -157,6 +161,7 @@ O_Stream& O_Stream::operator<< (void *pointer)
 
 }
 
+/* Add your code here */ 
 O_Stream& O_Stream::operator<< (char* text)
 {
 
@@ -173,7 +178,6 @@ O_Stream& O_Stream::operator<< (char* text)
 
 /**
  * @brief 
-
  * @param fkt 
  * @return O_Stream& 
  */
@@ -220,5 +224,3 @@ O_Stream& hex (O_Stream& os)
     os.base = O_Stream::HEX;
     return os;
 }
-
-

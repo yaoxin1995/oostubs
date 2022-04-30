@@ -11,16 +11,10 @@
 /*****************************************************************************/
 
 #include "machine/cgascr.h"
-#include "machine/io_port.h"
 #include <cstddef>
 
-
+/* Add your code here */ 
 char* const CGA_Screen::CGA_START = (char *)0xb8000;
-
-CGA_Screen::CGA_Screen()
-{
-
-}
 
 void CGA_Screen::show (int x, int y, char c, unsigned char attrib)
 {
@@ -100,38 +94,31 @@ void CGA_Screen::shift_up_one_line ()
 
 void CGA_Screen::print (char* text, int length, unsigned char attrib)
 {
+    
     int start_x, start_y, i;
 
     getpos(start_x, start_y);
 
     for (i = 0; i < length; i++) {
-        if (text[i] == '\n') {
-            if (start_y == COLS_COUNT -1)
-                shift_up_one_line();
-            else
-                start_y += 1;
+        bool isLineFeed = text[ i ] == '\n';
+        if( isLineFeed || start_x >= COLS_COUNT-1)
+        {
+            ++start_y;
             start_x = 0;
-            continue;
+
+            if(start_y == ROW_COUNT) {
+                shift_up_one_line();
+                start_y--;
+            }
+            if(isLineFeed)
+                continue;
         }
 
         show(start_x, start_y, text[i], attrib);
-
-        if (start_x == COLS_COUNT - 1) {
-            start_x = 0;
-            if (start_y == ROW_COUNT - 1)
-                shift_up_one_line();
-            else
-                start_y++;
-        }
         start_x++;
 
     }
 
     setpos(start_x, start_y);
-
+    
 } 
-
-
-
-
-	

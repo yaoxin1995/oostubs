@@ -11,9 +11,12 @@
 /* INCLUDES */
 
 #include "machine/keyctrl.h"
-#define DEFAULT_MAX_SPEED 31
-#define DEFAULT_MAX_DELAY 3
+#include "machine/cgascr.h"
+#include "device/cgastr.h"
+ 
 /* STATIC MEMBERS */
+#define  DEFAULT_SPEED 31
+#define DEFAULT_DELAY 3
 
 unsigned char Keyboard_Controller::normal_tab[] = {
     0,   0,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 225, 39,   '\b',
@@ -218,7 +221,9 @@ void Keyboard_Controller::get_ascii_code()
 // KEYBOARD_CONTROLLER: keyboard initialization: disables all LEDs and
 //                      sets the repeat rate to maximum.
 
-Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
+CGA_Stream cout;
+
+Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60), leds(0)
 {
 	// disable all LEDs (many PCs enable Num Lock during the boot process)
 	set_led(led::caps_lock, false);
@@ -239,21 +244,26 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60)
 Key Keyboard_Controller::key_hit ()
 {
 	Key invalid;  // not explicitly initialized Key objects are invalid
-	int status;
-	// Test if the outputbuffer is empty
-	do
-	{		
+	int status ;
+	bool decoded = 0;
+	do{
 		status = ctrl_port.inb();
-	}while (!(status & outb));
-	code = data_port.inb();	
-
-	if(key_decoded()){
-		if((status & auxb)){
-		return invalid;
+	}while((status & outb) == 0); 
+	
+	while (!decoded && (ctrl_port.inb() & outb)) { //Zeichen steht in Ausgabepuffer bereit
+		code = data_port.inb();
+		decoded = key_decoded();
 	}
-		return gather;
+	
+
+	if (status & auxb) {
+		return invalid;		
 	}
 
+	if (decoded) return gather;
+	
+	else return invalid;
+	
 	return invalid;
 }
 
@@ -288,54 +298,63 @@ void Keyboard_Controller::reboot()
 
 void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 {
-
 	int status;
  	do {
-		status =
-		    ctrl_port.inb(); // wait until last command is processed
+		status = ctrl_port.inb(); // wait until last command is processed
 	} while ((status & inpb) != 0);
 
 	data_port.outb(kbd_cmd::set_speed); //send command into port
 
-	do {
-		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending command
+	do{
+		status = ctrl_port.inb();
+	}while((status & outb) == 0);    // wait for the command been consumed by keyboard controller
+	
+	//wait for ACK after sending command
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
+
  	
-	 //set parameter after sending the user data. 
-	data_port.outb((speed & DEFAULT_MAX_SPEED) | (delay & DEFAULT_MAX_DELAY) << 5);  //send parameter and avoid invalid delay or speed
+	 //set parameter 
+	data_port.outb((speed & DEFAULT_SPEED) | (delay & DEFAULT_DELAY) << 5);  //avoid invalid delay or speed
 
 	do {
-		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending parameter.
+		status = ctrl_port.inb(); 			// wait until outputbuffer is empty
+	} while ((status & outb) == 0);
+
+	//wait for ACK after sending data.
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
+
+ 
 }
 
 // SET_LED: sets or clears the specified LED
 
 void Keyboard_Controller::set_led (char led, bool on)
 {
+
 	int status;
- 	do {
-		status =
-		    ctrl_port.inb(); // wait until last command is processed
-	} while ((status & inpb) != 0);
-
-	data_port.outb(kbd_cmd::set_led); //send command into port
-
-	do {
-		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending command
-	if(on){
-		leds |= leds;
-	}
-	else{
-		leds &= leds;
-	}
-
-	data_port.outb(leds);  //send parameter
- 	
-	do {
-		status = data_port.inb(); 
-	} while(status != kbd_reply::ack);	//wait for ACK after sending parameter.
-
 	
+	do
+	{ status = ctrl_port.inb ();     
+	} while ((status & inpb) != 0); 
+
+	data_port.outb(kbd_cmd::set_led); 
+	do
+	{ status = ctrl_port.inb();
+	}while((status & outb) == 0);    // wait for the command been consumed by keyboard controller
+	
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
+	
+	// Bit in leds set/reset
+	if (on){
+		leds = leds | led;}
+	else{
+		leds = leds & ~led;}
+
+	data_port.outb(leds); 
+	do
+	{ status = ctrl_port.inb();
+	}while((status & outb) == 0);    // wait for the command been consumed by keyboard controller
+
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
+ 
 }

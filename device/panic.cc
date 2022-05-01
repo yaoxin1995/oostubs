@@ -9,10 +9,11 @@
 /*****************************************************************************/
 #include "device/panic.h"
 
-
+extern CGA_Stream cout;
+extern CPU cpu;
+ 
 void Panic::trigger(){
     cout << "Error, system stop!" << endl;
-    cout.flush();
     cpu.halt();
 }
 

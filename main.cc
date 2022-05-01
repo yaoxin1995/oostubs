@@ -1,7 +1,16 @@
-/* Add your code here */ 
+
 #include "machine/cgascr.h"
 #include "device/cgastr.h"
 #include "machine/keyctrl.h"
+
+#include "device/keyboard.h"
+#include "machine/pic.h"
+#include "machine/plugbox.h"
+
+#include "user/appl.h"
+
+
+
 
 #define TEXTLEN 1000
 
@@ -19,41 +28,6 @@ static void get_string(char* str, int size)
 
 }
 
-
-<<<<<<< HEAD
-// static void test_sga_screen() 
-// {
-// 	CGA_Screen screen;
-// 	char text[TEXTLEN] = {};
-
-// 	get_string(text, TEXTLEN);
-
-// 	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES_WITHOUT_BLINK);
-// }
-=======
-static void test_sga_screen() 
-{
-	CGA_Screen screen;
-	char text[TEXTLEN] = {};
-
-	get_string(text, TEXTLEN);
-
-	screen.print(text, TEXTLEN, DEFAULT_ATTRIBUTES);
-}
->>>>>>> origin/shiyue-task2
-
-/**
- * 
- * 
- * char: smallest addressable unit of the machine that can contain basic character set
- * unsigned char : [0:255]
- * unsigned short:  [0, 65,535] 
- * short : [−32,767, +32,767]
- * unsigned int: [0, 65,535]
- * int: [−32,767, +32,767]
- * unsigned long:  [0, 4,294,967,295]
- * long 
- */
 
 static void test_cga_Stream()
 {
@@ -124,17 +98,22 @@ static void test_key_ctrl(){
 	}
 }
 
+Plugbox plugbox;
+PIC pic;
+CGA_Stream cout;
+Panic panic;
+CPU cpu;
+Keyboard keyboard;
+Application application;
 
 int main()
 {
-/* Add your code here */
-	//test_sga_screen();
- 
-/* Add your code here */ 
-	test_cga_Stream();
-	test_key_ctrl();
- 
-/* Add your code here */ 
+	cpu.enable_int();
+	keyboard.plugin();
+	pic.allow(PIC::keyboard);
+
+	application.action();
+	for(;;);
  
 	return 0;
 }

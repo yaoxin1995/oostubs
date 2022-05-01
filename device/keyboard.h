@@ -25,14 +25,11 @@ class Keyboard :  public Gate, public Keyboard_Controller
 {
 private:
 	Keyboard(const Keyboard &copy); // prevent copying
-	Plugbox plugbox;
-	PIC pic;
-	CGA_Stream cout;
 public:
 	Keyboard(){}
 	// PLUGIN: "Plugs in" the keyboard (driver). From now on, keypresses are handled.
 	void plugin();
-	void trigger();
+	void trigger() override;
 
 
 };

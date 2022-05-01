@@ -22,9 +22,6 @@ class Panic : public Gate
 {
 private:
 	Panic (const Panic &copy); // prevent copying
-	
-	CPU cpu;
-	CGA_Stream cout;
 
 public:
     Panic (){}

@@ -9,6 +9,14 @@
 /*****************************************************************************/
 
 #include "device/keyboard.h"
+#include "machine/pic.h"
+#include "device/cgastr.h"
+#include "machine/plugbox.h"
+
+extern Plugbox plugbox;
+extern PIC pic;
+extern CGA_Stream cout;
+extern Panic panic;
 
 void Keyboard::plugin (){
 
@@ -18,14 +26,12 @@ void Keyboard::plugin (){
 }
 
 void Keyboard::trigger(){
-
     int x, y;
     Key key = key_hit();
 
     if(key.valid()){
-        if( key.ctrl() & key.alt() & (key.ascii() == 0x53 )){  //ctrl + alt + del :activate reboot();                
+        if( key.ctrl() && key.alt() && (key.scancode() == Key::scan::del))
             reboot();
-        }
         else{
             cout.flush();
             cout.getpos(x, y);

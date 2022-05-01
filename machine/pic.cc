@@ -14,35 +14,24 @@
 /*****************************************************************************/
 
 #include "machine/pic.h"
+#include "device/cgastr.h"
 
-
+extern  CGA_Stream cout;
 void PIC::allow(int interrupt_device){
-    int imr;
 
-    if(interrupt_device < 8){                               // master PIC
-        imr =  imr_master.inb() & ~(1 << interrupt_device); 
-        imr_master.outb(imr);
-    }
-    else{                                                   //slave PIC
-        imr =  imr_slave.inb() & ~(1 << (interrupt_device - 8));
-        imr_slave.outb(imr);
-    }
-
+    if(interrupt_device < 8)                         // master PIC
+        imr_master.outb(imr_master.inb() & ~(1 << interrupt_device));
+    else                                              //slave PIC
+        imr_slave.outb(imr_slave.inb() & ~(1 << (interrupt_device - 8)));
 }
 
 //  OCW 1 的某一位置1 代表该处的 interrupt 被屏蔽
 void PIC::forbid(int interrupt_device){
-    int imr;
 
-    if(interrupt_device < 8){                              // master PIC
-        imr =  imr_master.inb() | (1 << interrupt_device);
-        imr_master.outb(imr);
-    }
-    else{                                                   //slave PIC
-        imr =  imr_slave.inb() | (1 << (interrupt_device - 8));
-        imr_slave.outb(imr);
-    }
-
+    if(interrupt_device < 8)                           // master PIC
+        imr_master.outb(imr_master.inb() | (1 << interrupt_device));
+    else                                                 //slave PIC
+        imr_slave.outb(imr_slave.inb() | (1 << (interrupt_device - 8)));
 }
 
 bool PIC::is_masked(int interrupt_device){

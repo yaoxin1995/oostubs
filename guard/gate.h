@@ -17,6 +17,9 @@ public:
     Gate(){}
     virtual void trigger() = 0;
 
+    // prevent memory leak
+    virtual ~Gate(){}
+
 };
 
 #endif

@@ -18,7 +18,7 @@
 class Plugbox {
 private:
 	Plugbox(const Plugbox &copy); // prevent copying
-	Panic panic;
+	Gate* gates[64];
 
 public:
 	Plugbox ();

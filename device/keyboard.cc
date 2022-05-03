@@ -30,7 +30,7 @@ void Keyboard::trigger(){
     Key key = key_hit();
 
     if(key.valid()){
-        if( key.ctrl() && key.alt() && (key.scancode() == Key::scan::del))
+        if( key.ctrl() && key.alt() && (key.scancode() == Key::scan::del)) //ctrl + alt + del
             reboot();
         else{
             cout.flush();

@@ -246,18 +246,17 @@ Key Keyboard_Controller::key_hit ()
 {
 	Key invalid;  // not explicitly initialized Key objects are invalid
 
-	int status;
+	int status= ctrl_port.inb();
+	bool decoded = false;
 
-	do{
-		status = ctrl_port.inb();
-	}while((status & outb) == 0); 
+	while(ctrl_port.inb() & outb) {
+		code = data_port.inb();
+		decoded = key_decoded();
+	}
+	// if (status & auxb)
+	// 	return invalid;
 
-	if (status & auxb)
-		return invalid;
-
-	code = data_port.inb();
-	
-	if (key_decoded()) 
+	if (decoded) 
 		return gather;
 	
 	return invalid;

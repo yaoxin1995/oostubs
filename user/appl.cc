@@ -38,12 +38,12 @@ void Application::action()
         // prevent external interupts interupt the app execution
         cpu.disable_int();
         cout.setpos(20, 20);
-        cout << "Who am I";
+        cout << "a";
         cout.flush();
         cpu.enable_int();
-        while(i < 10000)
-            i++;
-        i = 0;
+        // while(i < 10000)
+        //     i++;
+        // i = 0;
     }
  
 }

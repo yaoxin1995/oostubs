@@ -2,25 +2,24 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         A P P L I C A T I O N                             */
+/*                                  G A T E                                  */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The Application class defines the (only) application for OOStuBS.         */
+/* Class of objects that handle interrupts.                                  */
 /*****************************************************************************/
 
-#ifndef __application_include__
-#define __application_include__
+#ifndef __Gate_include__
+#define __Gate_include__
 
-class Application
- 
-{
-private:
-	Application (const Application &copy); // prevent copying
-
+class Gate{
 public:
-/* Add your code here */ 
-	Application (){};
-	void action ();
+    
+    Gate(){}
+    virtual void trigger() = 0;
+
+    // prevent memory leak
+    virtual ~Gate(){}
+
 };
 
 #endif

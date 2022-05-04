@@ -100,21 +100,24 @@ void CGA_Screen::print (char* text, int length, unsigned char attrib)
     getpos(start_x, start_y);
 
     for (i = 0; i < length; i++) {
-        bool isLineFeed = text[ i ] == '\n';
-        if( isLineFeed || start_x >= COLS_COUNT-1)
-        {
-            ++start_y;
-            start_x = 0;
-
-            if(start_y == ROW_COUNT) {
+        if (text[i] == '\n') {
+            if (start_y == COLS_COUNT -1)
                 shift_up_one_line();
-                start_y--;
-            }
-            if(isLineFeed)
-                continue;
+            else
+                start_y += 1;
+            start_x = 0;
+            continue;
         }
 
         show(start_x, start_y, text[i], attrib);
+
+        if (start_x == COLS_COUNT - 1) {
+            start_x = 0;
+            if (start_y == ROW_COUNT - 1)
+                shift_up_one_line();
+            else
+                start_y++;
+        }
         start_x++;
 
     }

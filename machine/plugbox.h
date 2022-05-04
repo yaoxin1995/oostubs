@@ -2,25 +2,36 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         A P P L I C A T I O N                             */
+/*                              P L U G B O X                                */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The Application class defines the (only) application for OOStuBS.         */
+/* Abstracts an interrupt vector table. Allows to configure handler routines */
+/* for every hardware and software interrupt and every CPU exception.        */
 /*****************************************************************************/
 
-#ifndef __application_include__
-#define __application_include__
+#ifndef __Plugbox_include__
+#define __Plugbox_include__
 
-class Application
- 
-{
+#include "guard/gate.h"
+#include "device/panic.h"
+
+class Plugbox {
 private:
-	Application (const Application &copy); // prevent copying
+	Plugbox(const Plugbox &copy); // prevent copying
+	Gate* gates[64];
 
 public:
-/* Add your code here */ 
-	Application (){};
-	void action ();
+	Plugbox ();
+	
+	enum { 
+		timer = 32, 
+		keyboard = 33, 
+		printer = 39 
+	};
+
+	void assign (unsigned int slot, Gate& gate);
+
+	Gate& report (unsigned int slot);
 };
 
 #endif

@@ -2,25 +2,21 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         A P P L I C A T I O N                             */
+/*                                 P A N I C                                 */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The Application class defines the (only) application for OOStuBS.         */
+/* Default interrupt handler.                                                */
 /*****************************************************************************/
+#include "device/panic.h"
 
-#ifndef __application_include__
-#define __application_include__
-
-class Application
+extern CGA_Stream cout;
+extern CPU cpu;
  
-{
-private:
-	Application (const Application &copy); // prevent copying
+void Panic::trigger(){
+    cout << "Error, system stop!" << endl;
+    cpu.halt();
+}
 
-public:
-/* Add your code here */ 
-	Application (){};
-	void action ();
-};
 
-#endif
+
+ 

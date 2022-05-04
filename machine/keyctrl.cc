@@ -13,6 +13,7 @@
 #include "machine/keyctrl.h"
 #include "machine/cgascr.h"
 #include "device/cgastr.h"
+#include "machine/pic.h"
  
 /* STATIC MEMBERS */
 #define  DEFAULT_SPEED 31
@@ -221,7 +222,7 @@ void Keyboard_Controller::get_ascii_code()
 // KEYBOARD_CONTROLLER: keyboard initialization: disables all LEDs and
 //                      sets the repeat rate to maximum.
 
-CGA_Stream cout;
+extern CGA_Stream cout;
 
 Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60), leds(0)
 {
@@ -244,27 +245,22 @@ Keyboard_Controller::Keyboard_Controller() : ctrl_port(0x64), data_port(0x60), l
 Key Keyboard_Controller::key_hit ()
 {
 	Key invalid;  // not explicitly initialized Key objects are invalid
-	int status ;
-	bool decoded = 0;
-	do{
-		status = ctrl_port.inb();
-	}while((status & outb) == 0); 
-	
-	while (!decoded && (ctrl_port.inb() & outb)) { //Zeichen steht in Ausgabepuffer bereit
+
+	int status= ctrl_port.inb();
+	bool decoded = false;
+
+	while(ctrl_port.inb() & outb) {
 		code = data_port.inb();
 		decoded = key_decoded();
 	}
-	
+	// if (status & auxb)
+	// 	return invalid;
 
-	if (status & auxb) {
-		return invalid;		
-	}
-
-	if (decoded) return gather;
-	
-	else return invalid;
+	if (decoded) 
+		return gather;
 	
 	return invalid;
+	
 }
 
 // REBOOT: Reboots the PC. Yes, in a PC the keyboard controller is
@@ -296,9 +292,18 @@ void Keyboard_Controller::reboot()
 //                  Allowed values are between 0 (very fast) and 31 (very
 //                  slow).
 
+extern PIC pic;
+
 void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 {
 	int status;
+	bool is_masked = false;
+
+	if (!pic.is_masked(PIC::keyboard)) {
+		pic.forbid(PIC::keyboard);
+		is_masked = true;
+	}
+
  	do {
 		status = ctrl_port.inb(); // wait until last command is processed
 	} while ((status & inpb) != 0);
@@ -321,9 +326,11 @@ void Keyboard_Controller::set_repeat_rate (int speed, int delay)
 	} while ((status & outb) == 0);
 
 	//wait for ACK after sending data.
-	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);
 
- 
+	if (is_masked)
+		pic.allow(PIC::keyboard);
+
 }
 
 // SET_LED: sets or clears the specified LED
@@ -332,7 +339,13 @@ void Keyboard_Controller::set_led (char led, bool on)
 {
 
 	int status;
-	
+	bool is_masked = false;
+
+	if (!pic.is_masked(PIC::keyboard)) {
+		pic.forbid(PIC::keyboard);
+		is_masked = true;
+	}
+
 	do
 	{ status = ctrl_port.inb ();     
 	} while ((status & inpb) != 0); 
@@ -355,6 +368,9 @@ void Keyboard_Controller::set_led (char led, bool on)
 	{ status = ctrl_port.inb();
 	}while((status & outb) == 0);    // wait for the command been consumed by keyboard controller
 
-	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);	
- 
+	while ((data_port.inb() & kbd_reply::ack) != kbd_reply::ack);
+
+	if (is_masked)
+		pic.allow(PIC::keyboard);
+	
 }

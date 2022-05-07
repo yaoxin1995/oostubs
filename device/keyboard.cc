@@ -28,23 +28,27 @@ void Keyboard::plugin (){
 
 bool Keyboard::prologue(){
 
+	Key key = key_hit();
+
     if(key.valid()){
         if( key.ctrl() && key.alt() && (key.scancode() == Key::scan::del)) //ctrl + alt + del
-            reboot();
-        else {
-            return true;
-        }
+              reboot(); 
+        
+        this->last_key = key.ascii();
+        return true;
     }
     return false;
-    
 }
 
 void Keyboard::epilogue(){
-        int x, y;
-        cout.flush();
-        cout.getpos(x, y);
-        cout.setpos(10, 10);
-        cout << key << endl;
-        cout.flush();
-        cout.setpos(x, y);
+	
+    Key key = key_hit();
+
+    int x, y;
+    cout.flush();
+    cout.getpos(x, y);
+    cout.setpos(10, 10);
+    cout << last_key << endl;
+    cout.flush();
+    cout.setpos(x, y);
 }

@@ -25,7 +25,7 @@ class Keyboard :  public Gate, public Keyboard_Controller
 {
 private:
 	Keyboard(const Keyboard &copy); // prevent copying
-	Key key = key_hit();
+	char last_key;
 public:
 	Keyboard(){}
 	// PLUGIN: "Plugs in" the keyboard (driver). From now on, keypresses are handled.

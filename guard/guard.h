@@ -25,7 +25,7 @@ private:
 	Gate *item;
 	Queue queue;
 public:
-	Guard () {}
+	Guard (){}
 	
 // With this method, the critical section is left
 // and the accumulated epilogues are worked off.

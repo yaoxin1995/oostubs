@@ -26,8 +26,8 @@ private:
 public:
     Panic (){}
 	
-//this method is used to throw out an error message and stop the cpu
-	virtual void trigger() override;
+// Simplest form of interrupt handling: An error message is output and the processor is stopped.
+	virtual bool prologue() override;
 
 };
 

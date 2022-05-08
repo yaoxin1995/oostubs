@@ -16,5 +16,17 @@
 #define __Secure_include__
 
 /* Add your code here */ 
+#include "guard/guard.h"
+extern Guard guard;
+
+
+struct Secure {
+ // The critical section protected by the guard object guard is entered in the constructor.
+	// Im Destruktor wird der kritische Abschnitt wieder verlassen.
+     Secure() { guard.enter(); }
+     
+	~Secure() { guard.leave(); }
+};
+
 
 #endif

@@ -21,7 +21,7 @@ Plugbox::Plugbox(){
 //to the interrupt number slot in the plugbox
 void Plugbox::assign (unsigned int slot, Gate& gate){
     if(slot >= 64)
-        panic.trigger();
+        panic.prologue();
 
     gates[slot] = &gate;
 }
@@ -29,7 +29,7 @@ void Plugbox::assign (unsigned int slot, Gate& gate){
 //report the gate object that was entered in the plugbox for the interrupt number slot.
 Gate& Plugbox:: report (unsigned int slot){
     if (slot >= 64)
-        panic.trigger();
+        panic.prologue();
 
     return *gates[slot];
 }

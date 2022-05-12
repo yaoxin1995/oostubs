@@ -11,7 +11,9 @@
 #ifndef __Gate_include__
 #define __Gate_include__
 
-class Gate{
+#include "object/chain.h"
+
+class Gate : public Chain{
     bool is_attached_to_eplog_queue;
 public:
     

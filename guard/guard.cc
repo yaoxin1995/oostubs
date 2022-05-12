@@ -16,37 +16,38 @@
 extern CPU cpu;
 
 void Guard::leave(){
+    while(true){
 
         cpu.disable_int(); //Prologue shouldn't be interrupted
-        item = (Gate *)queue.dequeue();
-
-        while(item){      //There's still something in queue
+        item = (Gate *)queue.dequeue();       
+       
+        if(item){           //still items in queue
             item->queued(false);
-
             cpu.enable_int();
             item->epilogue();
-
-            cpu.disable_int();
-            item = (Gate *)queue.dequeue();
         }
-        retne ();
+        else break;        // no item in queue
         cpu.enable_int();
-    
+        item->epilogue();
+    }
+    //INTR here is still disabled
+    retne ();
+    cpu.enable_int();
 } 
 
 void Guard::relay(Gate* item){
 
+    if(item->queued()) return ;// never enqueue an item twice!!!
 
-    if(avail()){ // if critical section is free, item now in epilogue level
-        enter();
-        cpu.enable_int();
+    //critical section free, excute epilogue
+    if(avail()){ 
+        cpu.enable_int();// epilogue can be interrupted by prologue
         item -> epilogue();
-        leave();
     }
     // critical section is occupied, put item in queue 
-    else if(!item->queued()){
+    else {
+        item->queued(true);
         queue.enqueue(item);    //put item in queue
-        item -> queued(true);
     }
 
     

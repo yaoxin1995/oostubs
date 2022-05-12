@@ -6,8 +6,10 @@
 #include "device/keyboard.h"
 #include "machine/pic.h"
 #include "machine/plugbox.h"
-
+#include "guard/guard.h"
 #include "user/appl.h"
+#include "guard/secure.h"
+
 
 
 
@@ -105,12 +107,12 @@ Panic panic;
 CPU cpu;
 Keyboard keyboard;
 Application application;
+Guard guard;
 
 int main()
 {
 	cpu.enable_int();
 	keyboard.plugin();
-	pic.allow(PIC::keyboard);
 
 	application.action();
 	for(;;);

@@ -51,7 +51,6 @@ public:
 
 		is_locked = false;
 	}
-
 	// This method indicates whether the critical section is free.
 	bool avail () {
 		return !is_locked;

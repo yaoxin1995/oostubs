@@ -18,6 +18,7 @@
 #include "machine/pic.h"
 #include "device/cgastr.h"
 #include "machine/plugbox.h"
+#include "guard/secure.h"
 /* Add your code here */ 
  
 /* GLOBAL VARIABLES */
@@ -36,14 +37,11 @@ void Application::action()
 
     for (;;) {
         // prevent external interupts interupt the app execution
-        cpu.disable_int();
+        Secure secure; 
         cout.setpos(20, 20);
-        cout << "a";
+        cout << "endless output make me sooooooo tried";
         cout.flush();
-        cpu.enable_int();
-        // while(i < 10000)
-        //     i++;
-        // i = 0;
+
     }
  
 }

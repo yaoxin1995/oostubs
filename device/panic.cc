@@ -12,7 +12,7 @@
 extern CGA_Stream cout;
 extern CPU cpu;
  
-void Panic::trigger(){
+bool Panic::prologue() {
     cout << "Error, system stop!" << endl;
     cpu.halt();
 }

@@ -33,8 +33,7 @@ bool Keyboard::prologue(){
     if(key.valid()){
         if( key.ctrl() && key.alt() && (key.scancode() == Key::scan::del)) //ctrl + alt + del
               reboot(); 
-        
-        this->last_key = key.ascii();
+        this->last_key = key.ascii();  //atomic write
         return true;
     }
     return false;
@@ -42,13 +41,11 @@ bool Keyboard::prologue(){
 
 void Keyboard::epilogue(){
 	
-    Key key = key_hit();
-
     int x, y;
     cout.flush();
     cout.getpos(x, y);
     cout.setpos(10, 10);
-    cout << last_key << endl;
+    cout << last_key << endl; 
     cout.flush();
     cout.setpos(x, y);
 }

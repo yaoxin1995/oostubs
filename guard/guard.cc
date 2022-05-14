@@ -41,8 +41,9 @@ void Guard::relay(Gate* item){
 
     //critical section free, excute epilogue
     if(avail()){ 
-        cpu.enable_int();// epilogue can be interrupted by prologue
+        enter();
         item -> epilogue();
+        leave();
     }
     // critical section is occupied, put item in queue 
     else {

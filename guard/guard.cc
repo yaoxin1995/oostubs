@@ -21,12 +21,10 @@ void Guard::leave(){
         cpu.disable_int(); //Prologue shouldn't be interrupted
         item = (Gate *)queue.dequeue();       
        
-        if(item){           //still items in queue
-            item->queued(false);
-            cpu.enable_int();
-            item->epilogue();
+        if(!item){           //empty queue
+            break;
         }
-        else break;        // no item in queue
+        item->queued(false);
         cpu.enable_int();
         item->epilogue();
     }
@@ -42,13 +40,17 @@ void Guard::relay(Gate* item){
     //critical section free, excute epilogue
     if(avail()){ 
         enter();
+        cpu.enable_int();
         item -> epilogue();
         leave();
+        // cpu.disable_int();
     }
     // critical section is occupied, put item in queue 
     else {
+        cpu.disable_int();
         item->queued(true);
         queue.enqueue(item);    //put item in queue
+        // cpu.enable_int();
     }
 
     

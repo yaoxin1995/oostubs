@@ -39,9 +39,8 @@ void Application::action()
         // prevent external interupts interupt the app execution
         Secure secure; 
         cout.setpos(20, 20);
-        cout << "endless output make me sooooooo tried";
+        cout << "endless output makes me sooooooo tried";
         cout.flush();
-
     }
  
 }

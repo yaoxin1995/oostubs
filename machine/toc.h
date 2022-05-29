@@ -24,7 +24,7 @@
 #define __toc_include__
 
 // TOC: ("thread of control")
-//
+// Struct for book keeping of non-volatile registers (callee saved)
 struct toc {
 	void *rbx;
 	void *r12;

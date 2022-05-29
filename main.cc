@@ -106,15 +106,24 @@ CGA_Stream cout;
 Panic panic;
 CPU cpu;
 Keyboard keyboard;
-Application application;
+
 Guard guard;
+
+static char app_stack[2048];
 
 int main()
 {
 	cpu.enable_int();
 	keyboard.plugin();
 
-	application.action();
+	/*The constructor gives the application process a stack. 
+	Here tos must already point to the end of the stack, since 
+	for the PC stacks grow from the high to the low addresses.
+	*/
+	Application application(app_stack + sizeof(app_stack));
+
+	application.go();
+
 	for(;;);
  
 	return 0;

@@ -11,15 +11,22 @@
 #ifndef __application_include__
 #define __application_include__
 
-class Application
- 
+#include "device/cgastr.h"
+#include "device/keyboard.h"
+#include "machine/pic.h"
+#include "device/cgastr.h"
+#include "machine/plugbox.h"
+#include "guard/secure.h"
+#include "thread/coroutine.h"
+
+class Application: public Coroutine
 {
 private:
 	Application (const Application &copy); // prevent copying
 
 public:
 /* Add your code here */ 
-	Application (){};
+	Application (void* tos): Coroutine(tos) {}
 	void action ();
 };
 

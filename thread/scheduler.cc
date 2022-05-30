@@ -32,7 +32,7 @@ void Scheduler::exit(){
         while(!first) ;
     }
 } 
-    
+
 
 void Scheduler::kill(Entrant &that){
     ready_list.remove(&that);
@@ -46,4 +46,4 @@ void Scheduler::resume(){
 
     active_ptr = static_cast<Entrant *>(ready_list.dequeue());
     if(active_ptr) dispatch(*active_ptr);
-}  
+}   

@@ -17,16 +17,18 @@
 #include "device/cgastr.h"
 #include "machine/plugbox.h"
 #include "guard/secure.h"
-#include "thread/coroutine.h"
+#include "thread/entrant.h"
+#include "user/loop.h"
 
-class Application: public Coroutine
+
+class Application: public Entrant
 {
 private:
 	Application (const Application &copy); // prevent copying
 
 public:
 /* Add your code here */ 
-	Application (void* tos): Coroutine(tos) {}
+	Application (void* tos):  Entrant(tos) {}
 	void action ();
 };
 

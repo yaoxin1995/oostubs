@@ -9,6 +9,7 @@
 #include "guard/guard.h"
 #include "user/appl.h"
 #include "guard/secure.h"
+#include "thread/scheduler.h"
 
 
 
@@ -106,7 +107,7 @@ CGA_Stream cout;
 Panic panic;
 CPU cpu;
 Keyboard keyboard;
-
+Scheduler scheduler;
 Guard guard;
 
 static char app_stack[2048];
@@ -122,7 +123,7 @@ int main()
 	*/
 	Application application(app_stack + sizeof(app_stack));
 
-	application.go();
+	scheduler.go(application);
 
 	for(;;);
  

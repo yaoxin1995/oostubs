@@ -15,4 +15,24 @@
 
 /* Add your code here */ 
  
+#include "device/cgastr.h"
+#include "device/keyboard.h"
+#include "machine/pic.h"
+#include "device/cgastr.h"
+#include "machine/plugbox.h"
+#include "guard/secure.h"
+#include "thread/entrant.h"
+
+class Loop: public Entrant
+{
+private:
+	Loop (const Loop &copy); // prevent copying
+    int i;
+
+public:
+/* Add your code here */ 
+	Loop (void* tos, int i):  Entrant(tos) , i(i){}
+	void action ();
+};
+
 #endif

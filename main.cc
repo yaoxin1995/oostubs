@@ -123,7 +123,10 @@ int main()
 	*/
 	Application application(app_stack + sizeof(app_stack));
 
-	scheduler.go(application);
+	// scheduler.go(application);
+    scheduler.ready(application);
+	scheduler.schedule();
+	
 
 	for(;;);
  

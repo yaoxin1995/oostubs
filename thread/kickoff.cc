@@ -15,11 +15,17 @@
 /* Add your code here */ 
 
 #include "thread/coroutine.h"
+#include "thread/scheduler.h"
+
+extern Scheduler scheduler;
+
 
 extern "C"  void kickoff (void *dummy1, void *dummy2, void *dummy3, void *dummy4, void *dummy5, void *dummy6, void* object) 
 {
     Coroutine* obj = (Coroutine *)object;
     obj->action();
 
-    for(;;){}
+    // for(;;){} 
+    scheduler.exit();
+    
 }

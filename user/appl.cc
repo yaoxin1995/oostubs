@@ -13,12 +13,8 @@
 
 
 #include "user/appl.h"
-#include "device/cgastr.h"
-#include "device/keyboard.h"
-#include "machine/pic.h"
-#include "device/cgastr.h"
-#include "machine/plugbox.h"
-#include "guard/secure.h"
+#include "thread/scheduler.h"
+
 /* Add your code here */ 
  
 /* GLOBAL VARIABLES */
@@ -28,20 +24,38 @@ extern Plugbox plugbox;
 extern PIC pic;
 extern Panic panic;
 extern CPU cpu;
+extern Scheduler scheduler;
+
 /* Add your code here */ 
- 
+static char stack_loop1[4096];
+static char stack_loop2[4096];
+static char stack_loop3[4096];
+
 void Application::action()
 {
-/* Add your code here */ 
-    long i = 0;
+    Loop loop1(stack_loop1 + sizeof(stack_loop1), 1);
+    Loop loop2(stack_loop2 + sizeof(stack_loop3), 2);
+    Loop loop3(stack_loop3 + sizeof(stack_loop3), 3);
 
+    scheduler.ready(loop1);
+    scheduler.ready(loop2);
+
+
+    scheduler.ready(loop3);
+
+/* Add your code here */ 
     for (;;) {
         // prevent external interupts interupt the app execution
-        Secure secure; 
-        cout.setpos(20, 20);
-        cout << "endless output make me sooooooo tried";
-        cout.flush();
+        {
+            Secure secure;  // destroy look after we leave the {}
+            cout.setpos(20, 20);
+            cout << "II am app" << endl;
 
+        }
+
+        
+        scheduler.resume();
+        scheduler.kill(loop2);
     }
  
 }

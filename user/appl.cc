@@ -56,7 +56,7 @@ void Application::action()
         }
 
         
-        scheduler.resume();
+        // scheduler.resume();
         scheduler.kill(loop2);
     }
  

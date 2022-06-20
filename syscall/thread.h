@@ -21,6 +21,8 @@ class Thread
 private:
 	Thread(const Thread &copy); // prevent copying
 /* Add your code here */ 
+public:
+ 	Thread(void* tos) : Entrant(tos){ } 
  
 };
 

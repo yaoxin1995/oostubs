@@ -41,7 +41,7 @@ void Loop::action()
             scheduler.exit();
         }
             
-        scheduler.resume();
+        // scheduler.resume();
     }
  
 }

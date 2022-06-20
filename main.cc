@@ -10,7 +10,7 @@
 #include "user/appl.h"
 #include "guard/secure.h"
 #include "thread/scheduler.h"
-
+#include "device/watch.h"
 
 
 
@@ -109,6 +109,7 @@ CPU cpu;
 Keyboard keyboard;
 Scheduler scheduler;
 Guard guard;
+Watch watch(1000);
 
 static char app_stack[2048];
 
@@ -116,6 +117,7 @@ int main()
 {
 	cpu.enable_int();
 	keyboard.plugin();
+	watch.windup();
 
 	/*The constructor gives the application process a stack. 
 	Here tos must already point to the end of the stack, since 

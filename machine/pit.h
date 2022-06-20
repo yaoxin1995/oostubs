@@ -12,6 +12,10 @@
 #define __pit_include__
 #include "machine/io_port.h"
 
+// |Port (1.PIT)	|Register		|Access modes
+// |0x40	    	|Counter 0		|write/read
+// |0x43			|Ctrl register  |write only
+
 class PIT {
 private:
 	PIT(const PIT &copy); // prevent copying

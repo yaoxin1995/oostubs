@@ -21,14 +21,14 @@
 #include "user/loop.h"
 
 
-class Application: public Entrant
+class Application: public Thread
 {
 private:
 	Application (const Application &copy); // prevent copying
 
 public:
-/* Add your code here */ 
-	Application (void* tos):  Entrant(tos) {}
+
+	Application (void* tos):  Thread(tos) {}
 	void action ();
 };
 

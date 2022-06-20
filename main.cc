@@ -124,6 +124,9 @@ int main()
 	Application application(app_stack + sizeof(app_stack));
 
 	// scheduler.go(application);
+
+	// application is the very first thread, scheduler lauch this thread by call kickoff fucntion. In kickoff, we leave the critical section, which means we have to enter critical section here 
+	guard.enter();
     scheduler.ready(application);
 	scheduler.schedule();
 	

@@ -12,10 +12,11 @@
 #define __thread_include__
 
 /* Add your code here */ 
- 
+#include "thread/entrant.h"
+
 class Thread
 /* Add your code here */ 
- 
+:public Entrant
 {
 private:
 	Thread(const Thread &copy); // prevent copying

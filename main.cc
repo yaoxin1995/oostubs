@@ -11,7 +11,7 @@
 #include "guard/secure.h"
 #include "thread/scheduler.h"
 #include "device/watch.h"
-
+#include "syscall/guarded_scheduler.h"
 
 
 
@@ -107,7 +107,8 @@ CGA_Stream cout;
 Panic panic;
 CPU cpu;
 Keyboard keyboard;
-Scheduler scheduler;
+// Scheduler scheduler;|
+Guarded_Scheduler scheduler;
 Guard guard;
 Watch watch(1000);
 
@@ -128,8 +129,10 @@ int main()
 	// scheduler.go(application);
 
 	// application is the very first thread, scheduler lauch this thread by call kickoff fucntion. In kickoff, we leave the critical section, which means we have to enter critical section here 
-	guard.enter();
+
     scheduler.ready(application);
+	
+	guard.enter();
 	scheduler.schedule();
 	
 

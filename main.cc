@@ -107,7 +107,7 @@ CGA_Stream cout;
 Panic panic;
 CPU cpu;
 Keyboard keyboard;
-// Scheduler scheduler;|
+// Scheduler scheduler;
 Guarded_Scheduler scheduler;
 Guard guard;
 Watch watch(1000);
@@ -116,27 +116,25 @@ static char app_stack[2048];
 
 int main()
 {
-	cpu.enable_int();
+	cpu.enable_int();  
 	keyboard.plugin();
-	watch.windup();
-
 	/*The constructor gives the application process a stack. 
 	Here tos must already point to the end of the stack, since 
 	for the PC stacks grow from the high to the low addresses.
 	*/
 	Application application(app_stack + sizeof(app_stack));
 
-	// scheduler.go(application);
-
+	cout << "start ...." << endl;                      
+	scheduler.ready(application);
+	guard.enter();
+	watch.windup();    //after the 1. Thread been registered, otherwise timer interrupt will start to trigger thread preemption with a empty ready_list
 	// application is the very first thread, scheduler lauch this thread by call kickoff fucntion. In kickoff, we leave the critical section, which means we have to enter critical section here 
 
-    scheduler.ready(application);
-	
-	guard.enter();
 	scheduler.schedule();
-	
 
-	for(;;);
- 
+	for(;;){
+			cout.setpos(40, 20); 
+            cout << "II am stucked" << endl;
+	}
 	return 0;
 }

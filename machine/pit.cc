@@ -18,12 +18,16 @@ void PIT::interval(int us){
 // |    6-7   |     00   |  Counter 0
 // 7 6 5 4 3 2 1 0
 // 0 0 1 1 0 1 0 0  = 52 = 0x34
+//Q: how to convert 838ns into 1 microsec:
+    int ns = 1000 * us;
+    int interval = ns / 838;
+    if((ns % 838) > 419) interval++;
 
     //set control byte
     ctrl_port.outb(0x34);
     //lower 8 Bits
- 	rwport.outb(us & 0xff);
+ 	rwport.outb(interval & 0xff);
 	//higher 8 Bits
-	rwport.outb(  (us >>  8) );   
+	rwport.outb(  (interval >>  8) );   
 //
 }

@@ -126,9 +126,15 @@ int main()
 
 	cout << "start ...." << endl;                      
 	scheduler.ready(application);
-	guard.enter();
-	watch.windup();    //after the 1. Thread been registered, otherwise timer interrupt will start to trigger thread preemption with a empty ready_list
-	// application is the very first thread, scheduler lauch this thread by call kickoff fucntion. In kickoff, we leave the critical section, which means we have to enter critical section here 
+	/*
+	Q: 如果将 guard.enter(); 和 watch.windup(); 交换 会发生什么?
+	1. toc_switch 中 modify the address which is not belonging to it
+	2. 更严重是会enqueue null pointer 到 thread ready list 中,下一次会 call resume() 时 会从 ready list 中dequeue null pointer,导致scheduler无法 切换进程 see 
+	https://github.com/yaoxin1995/oostubs/blob/shiyue-task5/thread/scheduler.cc#L50
+	*/
+	guard.enter();	 // application is the very first thread, scheduler lauch this thread by call kickoff fucntion. In kickoff, we leave the critical section, which means we have to enter critical section here 		
+	watch.windup();  
+	
 
 	scheduler.schedule();
 

@@ -24,7 +24,7 @@ extern Guard guard;
 
 extern "C"  void kickoff (void *dummy1, void *dummy2, void *dummy3, void *dummy4, void *dummy5, void *dummy6, void* object) 
 {   
-    // Wacht's epilogue calls resume(), which will call kickoff eventually. However Wacht's epilogue is in critical section  and it will never return to it's caller relay()
+    // Q : Wacht's epilogue calls resume(), which will call kickoff eventually. However Wacht's epilogue is in critical section  and it will never return to it's caller relay()
     // therefore we need to leave the critical section explicitly by calling guard.leave();
     guard.leave();
     Coroutine* obj = (Coroutine *)object;

@@ -34,6 +34,6 @@ extern Guarded_Scheduler scheduler;
 
 
  void Watch::epilogue   (){
-     scheduler.Scheduler::resume();
+     scheduler.Scheduler::resume(); //Q:why not use resume in guarded_scheduler, prevent double enter in critical section
  }
 

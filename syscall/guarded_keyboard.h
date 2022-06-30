@@ -2,34 +2,26 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         A P P L I C A T I O N                             */
+/*                   G U A R D E D _ K E Y B O A R D                         */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The Application class defines the (only) application for OOStuBS.         */
+/* The Guarded_Keyboard class provides the system call interface to the      */
+/* keyboard.                                                                 */
 /*****************************************************************************/
 
-#ifndef __application_include__
-#define __application_include__
+#ifndef __Guarded_Keyboard_include__
+#define __Guarded_Keyboard_include__
 
-#include "device/cgastr.h"
-#include "device/keyboard.h"
-#include "machine/pic.h"
-#include "device/cgastr.h"
-#include "machine/plugbox.h"
-#include "guard/secure.h"
-#include "thread/entrant.h"
-#include "user/loop.h"
+/* Add your code here */ 
 
-
-class Application: public Thread
+class Guarded_Keyboard
+/* Add your code here */ 
 {
 private:
-	Application (const Application &copy); // prevent copying
-
+	Guarded_Keyboard(const Guarded_Keyboard &copy); // prevent copying
 public:
-
-	Application (void* tos):  Thread(tos) {}
-	void action ();
+	Guarded_Keyboard() {}
+/* Add your code here */ 
 };
 
 #endif

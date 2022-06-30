@@ -14,6 +14,7 @@
 
 #include "user/appl.h"
 #include "thread/scheduler.h"
+#include "syscall/guarded_scheduler.h"
 
 /* Add your code here */ 
  
@@ -24,7 +25,8 @@ extern Plugbox plugbox;
 extern PIC pic;
 extern Panic panic;
 extern CPU cpu;
-extern Scheduler scheduler;
+extern Guarded_Scheduler scheduler;
+
 
 /* Add your code here */ 
 static char stack_loop1[4096];
@@ -54,7 +56,7 @@ void Application::action()
         }
 
         
-        scheduler.resume();
+        // scheduler.resume();
         scheduler.kill(loop2);
     }
  

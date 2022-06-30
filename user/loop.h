@@ -22,8 +22,9 @@
 #include "machine/plugbox.h"
 #include "guard/secure.h"
 #include "thread/entrant.h"
+#include "syscall/thread.h"
 
-class Loop: public Entrant
+class Loop: public Thread
 {
 private:
 	Loop (const Loop &copy); // prevent copying
@@ -31,7 +32,7 @@ private:
 
 public:
 /* Add your code here */ 
-	Loop (void* tos, int i):  Entrant(tos) , i(i){}
+	Loop (void* tos, int i):  Thread(tos) , i(i){}
 	void action ();
 };
 

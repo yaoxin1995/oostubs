@@ -2,34 +2,27 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         A P P L I C A T I O N                             */
+/*                          B E L L R I N G E R                              */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The Application class defines the (only) application for OOStuBS.         */
+/* The "bell ringer" (Bellringer) is activated periodically and checks if    */
+/* any "bells" (Bell objects) need to ring. The bells are in a list that the */
+/* bellringer manages.                                                       */
 /*****************************************************************************/
 
-#ifndef __application_include__
-#define __application_include__
+#ifndef __Bellringer_include__
+#define __Bellringer_include__
 
-#include "device/cgastr.h"
-#include "device/keyboard.h"
-#include "machine/pic.h"
-#include "device/cgastr.h"
-#include "machine/plugbox.h"
-#include "guard/secure.h"
-#include "thread/entrant.h"
-#include "user/loop.h"
+/* Add your code here */ 
 
-
-class Application: public Thread
+class Bellringer
+/* Add your code here */ 
 {
 private:
-	Application (const Application &copy); // prevent copying
-
+	Bellringer(const Bellringer &copy); // prevent copying
 public:
-
-	Application (void* tos):  Thread(tos) {}
-	void action ();
+	Bellringer() {}
+/* Add your code here */ 
 };
 
 #endif

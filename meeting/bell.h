@@ -2,34 +2,27 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         A P P L I C A T I O N                             */
+/*                                 B E L L                                   */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The Application class defines the (only) application for OOStuBS.         */
+/* Bell is an abstract base class that allows the time-controlled triggering */
+/* of an activity. For this purpose, it has an internal counter that is      */
+/* managed by the Bellringer.                                                */
 /*****************************************************************************/
 
-#ifndef __application_include__
-#define __application_include__
+#ifndef __Bell_include__
+#define __Bell_include__
 
-#include "device/cgastr.h"
-#include "device/keyboard.h"
-#include "machine/pic.h"
-#include "device/cgastr.h"
-#include "machine/plugbox.h"
-#include "guard/secure.h"
-#include "thread/entrant.h"
-#include "user/loop.h"
+/* Add your code here */ 
 
-
-class Application: public Thread
+class Bell
+/* Add your code here */ 
 {
 private:
-	Application (const Application &copy); // prevent copying
-
+	Bell(const Bell &copy); // prevent copying
 public:
-
-	Application (void* tos):  Thread(tos) {}
-	void action ();
+	Bell() {}
+/* Add your code here */ 
 };
 
 #endif

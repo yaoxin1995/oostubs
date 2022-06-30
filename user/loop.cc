@@ -10,22 +10,23 @@
 /* which thread shall run next.                                              */
 /*****************************************************************************/
 
-/* Add your code here */ 
+
  #include "user/loop.h"
  #include "thread/scheduler.h"
-/* Add your code here */ 
+ #include "syscall/guarded_scheduler.h"
+
  
 extern CGA_Stream cout;
 extern Plugbox plugbox;
 extern PIC pic;
 extern Panic panic;
 extern CPU cpu;
-extern Scheduler scheduler; 
-/* Add your code here */ 
+extern Guarded_Scheduler scheduler; 
+// extern Scheduler scheduler; 
+ 
  
 void Loop::action()
 {
-/* Add your code here */
 
     for (;;) {
         // prevent external interupts interupt the app execution
@@ -40,7 +41,7 @@ void Loop::action()
             scheduler.exit();
         }
             
-        scheduler.resume();
+        // scheduler.resume();
     }
  
 }

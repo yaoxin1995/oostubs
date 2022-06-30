@@ -10,8 +10,8 @@
 #include "user/appl.h"
 #include "guard/secure.h"
 #include "thread/scheduler.h"
-
-
+#include "device/watch.h"
+#include "syscall/guarded_scheduler.h"
 
 
 
@@ -107,28 +107,40 @@ CGA_Stream cout;
 Panic panic;
 CPU cpu;
 Keyboard keyboard;
-Scheduler scheduler;
+// Scheduler scheduler;
+Guarded_Scheduler scheduler;
 Guard guard;
+Watch watch(1000);
 
 static char app_stack[2048];
 
 int main()
 {
-	cpu.enable_int();
+	cpu.enable_int();  
 	keyboard.plugin();
-
 	/*The constructor gives the application process a stack. 
 	Here tos must already point to the end of the stack, since 
 	for the PC stacks grow from the high to the low addresses.
 	*/
 	Application application(app_stack + sizeof(app_stack));
 
-	// scheduler.go(application);
-    scheduler.ready(application);
-	scheduler.schedule();
+	cout << "start ...." << endl;                      
+	scheduler.ready(application);
+	/*
+	Q: 如果将 guard.enter(); 和 watch.windup(); 交换 会发生什么?
+	1. toc_switch 中 modify the address which is not belonging to it
+	2. 更严重是会enqueue null pointer 到 thread ready list 中,下一次会 call resume() 时 会从 ready list 中dequeue null pointer,导致scheduler无法 切换进程 see 
+	https://github.com/yaoxin1995/oostubs/blob/shiyue-task5/thread/scheduler.cc#L50
+	*/
+	guard.enter();	 // application is the very first thread, scheduler lauch this thread by call kickoff fucntion. In kickoff, we leave the critical section, which means we have to enter critical section here 		
+	watch.windup();  
 	
 
-	for(;;);
- 
+	scheduler.schedule();
+
+	for(;;){
+			cout.setpos(40, 20); 
+            cout << "II am stucked" << endl;
+	}
 	return 0;
 }

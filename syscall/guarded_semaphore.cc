@@ -10,3 +10,15 @@
 /*****************************************************************************/
 
 /* Add your code here */ 
+#include "syscall/guarded_semaphore.h"
+#include "guard/secure.h"
+
+void Guarded_Semaphore::p() {
+    Secure secure;
+    Semaphore::p();
+}
+
+void Guarded_Semaphore::v() {
+    Secure secure;
+    Semaphore::v();
+}

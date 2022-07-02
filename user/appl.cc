@@ -15,6 +15,9 @@
 #include "user/appl.h"
 #include "thread/scheduler.h"
 #include "syscall/guarded_scheduler.h"
+#include "syscall/guarded_organizer.h"
+#include "syscall/guarded_semaphore.h"
+
 
 /* Add your code here */ 
  
@@ -25,8 +28,8 @@ extern Plugbox plugbox;
 extern PIC pic;
 extern Panic panic;
 extern CPU cpu;
-extern Guarded_Scheduler scheduler;
-
+// extern Guarded_Scheduler scheduler;
+extern Guarded_Organizer organizer;
 
 /* Add your code here */ 
 static char stack_loop1[4096];
@@ -39,11 +42,11 @@ void Application::action()
     Loop loop2(stack_loop2 + sizeof(stack_loop3), 2);
     Loop loop3(stack_loop3 + sizeof(stack_loop3), 3);
 
-    scheduler.ready(loop1);
-    scheduler.ready(loop2);
+    organizer.ready(loop1);
+    organizer.ready(loop2);
 
 
-    scheduler.ready(loop3);
+    organizer.ready(loop3);
 
 /* Add your code here */ 
     for (;;) {
@@ -57,7 +60,7 @@ void Application::action()
 
         
         // scheduler.resume();
-        scheduler.kill(loop2);
+        organizer.kill(loop2);
     }
  
 }

@@ -12,17 +12,17 @@
 #define __thread_include__
 
 /* Add your code here */ 
-#include "thread/entrant.h"
+#include "thread/customer.h"
 
 class Thread
 /* Add your code here */ 
-:public Entrant
+:public Customer
 {
 private:
 	Thread(const Thread &copy); // prevent copying
 /* Add your code here */ 
 public:
- 	Thread(void* tos) : Entrant(tos){ } 
+ 	Thread(void* tos) : Customer(tos){ } 
  
 };
 

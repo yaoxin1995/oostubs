@@ -14,14 +14,16 @@
  #include "user/loop.h"
  #include "thread/scheduler.h"
  #include "syscall/guarded_scheduler.h"
-
+#include "syscall/guarded_organizer.h"
+#include "syscall/guarded_semaphore.h"
  
 extern CGA_Stream cout;
 extern Plugbox plugbox;
 extern PIC pic;
 extern Panic panic;
 extern CPU cpu;
-extern Guarded_Scheduler scheduler; 
+// extern Guarded_Scheduler scheduler;
+extern Guarded_Organizer organizer; 
 // extern Scheduler scheduler; 
  
  
@@ -38,7 +40,7 @@ void Loop::action()
 
 
         if (i == 1) {
-            scheduler.exit();
+            organizer.exit();
         }
             
         // scheduler.resume();

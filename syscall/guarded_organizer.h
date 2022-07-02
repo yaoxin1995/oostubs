@@ -20,7 +20,14 @@ private:
 	Guarded_Organizer(const Guarded_Organizer &copy); // prevent copying
 public:
 	Guarded_Organizer() {}
-/* Add your code here */ 
+	// This method registers the process that with the scheduler.
+	void ready (Thread& that);
+	// This method allows a process to terminate itself.
+	void exit ();
+	// This method allows one process to terminate another (that).
+	void kill (Thread& that);
+	// This method can be used to trigger a process switch.
+	void resume ();
 };
 
 #endif

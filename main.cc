@@ -9,6 +9,8 @@
 #include "guard/guard.h"
 #include "user/appl.h"
 #include "guard/secure.h"
+#include "syscall/guarded_keyboard.h"
+#include "syscall/guarded_organizer.h"
 #include "thread/scheduler.h"
 #include "device/watch.h"
 #include "syscall/guarded_scheduler.h"
@@ -111,7 +113,7 @@ Keyboard keyboard;
 Guarded_Scheduler scheduler;
 Guard guard;
 Watch watch(1000);
-
+Guarded_Organizer organizer;
 static char app_stack[2048];
 
 int main()
@@ -125,7 +127,7 @@ int main()
 	Application application(app_stack + sizeof(app_stack));
 
 	cout << "start ...." << endl;                      
-	scheduler.ready(application);
+	organizer.ready(application);
 	/*
 	Q: 如果将 guard.enter(); 和 watch.windup(); 交换 会发生什么?
 	1. toc_switch 中 modify the address which is not belonging to it
@@ -136,11 +138,8 @@ int main()
 	watch.windup();  
 	
 
-	scheduler.schedule();
+	organizer.schedule();
 
-	for(;;){
-			cout.setpos(40, 20); 
-            cout << "II am stucked" << endl;
-	}
+	for(;;) ;
 	return 0;
 }

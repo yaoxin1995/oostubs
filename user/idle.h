@@ -2,28 +2,32 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                             T H R E A D                                   */
+/*                                 L O O P                                   */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* Implements user interface of a thread.                                    */
+/* Loop is a thread that does nothing else but count upwards and print this  */
+/* on the screen. In between, it yields the CPU. The Scheduler then decides  */
+/* which thread shall run next.                                              */
 /*****************************************************************************/
 
-#ifndef __thread_include__
-#define __thread_include__
+#ifndef __idle_include__
+#define __idle_include__
 
 /* Add your code here */ 
-#include "thread/customer.h"
+ 
+#include "device/cgastr.h"
+#include "thread/entrant.h"
+#include "syscall/thread.h"
 
-class Thread
-/* Add your code here */ 
-:public Customer
+class Idle: public Thread
 {
 private:
-	Thread(const Thread &copy); // prevent copying
-/* Add your code here */ 
+	Idle (const Idle &copy); // prevent copying
+
 public:
- 	Thread(void* tos) : Customer(tos){ } 
- 
+/* Add your code here */ 
+	Idle (void* tos):  Thread(tos){}
+	void action ();
 };
 
 #endif

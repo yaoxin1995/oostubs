@@ -8,5 +8,10 @@
 /* The Guarded_Keyboard class provides the system call interface to the      */
 /* keyboard.                                                                 */
 /*****************************************************************************/
+#include "syscall/guarded_keyboard.h"
+#include "guard/secure.h"
 
-/* Add your code here */ 
+Key Guarded_Keyboard::getkey() {
+    Secure secure;
+    return Keyboard::getkey();
+}

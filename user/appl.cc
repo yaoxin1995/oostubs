@@ -15,6 +15,14 @@
 #include "user/appl.h"
 #include "thread/scheduler.h"
 #include "syscall/guarded_scheduler.h"
+#include "syscall/guarded_organizer.h"
+#include "syscall/guarded_semaphore.h"
+#include "user/loop.h"
+#include "syscall/guarded_buzzer.h"
+#include "syscall/guarded_keyboard.h"
+
+extern Loop loop2;
+
 
 /* Add your code here */ 
  
@@ -25,39 +33,25 @@ extern Plugbox plugbox;
 extern PIC pic;
 extern Panic panic;
 extern CPU cpu;
-extern Guarded_Scheduler scheduler;
-
+// extern Guarded_Scheduler scheduler;
+extern Guarded_Organizer organizer;
+extern Guard guard;
+extern Guarded_Semaphore semaphore;
+extern Guarded_Keyboard guarded_keyboard;
+extern Loop loop1;
 
 /* Add your code here */ 
-static char stack_loop1[4096];
-static char stack_loop2[4096];
-static char stack_loop3[4096];
 
 void Application::action()
 {
-    Loop loop1(stack_loop1 + sizeof(stack_loop1), 1);
-    Loop loop2(stack_loop2 + sizeof(stack_loop3), 2);
-    Loop loop3(stack_loop3 + sizeof(stack_loop3), 3);
-
-    scheduler.ready(loop1);
-    scheduler.ready(loop2);
-
-
-    scheduler.ready(loop3);
-
+    organizer.ready(loop1);
 /* Add your code here */ 
     for (;;) {
-        // prevent external interupts interupt the app execution
-        {
-            Secure secure;  // destroy look after we leave the {}
-            cout.setpos(20, 20);
-            cout << "II am app" << endl;
 
-        }
-
-        
-        // scheduler.resume();
-        scheduler.kill(loop2);
-    }
+        Key k = guarded_keyboard.getkey();
+        semaphore.p();
+        cout << k << endl;
+        semaphore.v();
+    }   
  
 }

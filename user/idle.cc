@@ -10,31 +10,26 @@
 /* which thread shall run next.                                              */
 /*****************************************************************************/
 
-#ifndef __loop_include__
-#define __loop_include__
 
-/* Add your code here */ 
+#include "user/idle.h"
+#include "machine/cpu.h"
+#include "syscall/guarded_semaphore.h"
+
+extern CGA_Stream cout;
+extern CPU cpu;
+extern Guarded_Semaphore semaphore;
  
-#include "device/cgastr.h"
-#include "device/keyboard.h"
-#include "machine/pic.h"
-#include "device/cgastr.h"
-#include "machine/plugbox.h"
-#include "guard/secure.h"
-#include "thread/entrant.h"
-#include "syscall/thread.h"
-
-class Loop: public Thread
+inline void Idle::action()
 {
-private:
-	Loop (const Loop &copy); // prevent copying
-    int i;
-	int max;
-
-public:
-/* Add your code here */ 
-	Loop (void* tos, int max):  Thread(tos) , i(0), max(max){}
-	void action ();
-};
-
-#endif
+    int i = 1;
+    for (;;) {
+        cpu.idle();
+        semaphore.p();
+		cout << "idle" << i << endl;
+        i++;
+        semaphore.v();
+        if (i > 100)
+            i = 0;
+    }
+ 
+}

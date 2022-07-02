@@ -14,15 +14,47 @@
 #define __Bell_include__
 
 /* Add your code here */ 
+#include "object/chain.h"
+#include "device/cgastr.h"
 
+extern CGA_Stream cout; 
 class Bell
 /* Add your code here */ 
+: public Chain
 {
 private:
 	Bell(const Bell &copy); // prevent copying
+	int counter; 
+
 public:
-	Bell() {}
-/* Add your code here */ 
+	Bell():counter(0) {}
+/* Add your code here */
+
+	// Set or get the counter.
+	void wait (int value) {
+		counter = value;
+	}
+
+	int wait () {
+		return counter;
+	}
+
+	void tick () {
+	//	cout.setpos(30,20);
+		//cout << "bell counter: "<< counter << endl;
+		--counter;
+	}
+
+	// Returns true, when the time has expired
+	bool run_down() {
+		if (counter <= 0)
+			return true;
+		return false;
+
+	}
+
+	// Called by the bell ringer when it is the right time.
+	virtual void ring () = 0;
 };
 
 #endif

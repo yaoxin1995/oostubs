@@ -13,14 +13,16 @@
 #include "device/watch.h"
 #include "machine/plugbox.h"
 #include "machine/pic.h"
-#include "syscall/guarded_scheduler.h"
+#include "meeting/bellringer.h"
+#include "syscall/guarded_organizer.h"
 
+extern Bellringer bellringer;
 extern Plugbox plugbox;
 extern PIC pic;
-extern Guarded_Scheduler scheduler;
+extern Guarded_Organizer organizer;
 
 /* Add your code here */ 
- void Watch::windup () {
+ void Watch::windup (){
      // register with the Plugbox plugbox 
      plugbox.assign(Plugbox::timer, *this);
      // allow the interrupts
@@ -28,12 +30,13 @@ extern Guarded_Scheduler scheduler;
  }
 
  //Interrupt handler, guardian first call prologue(), if prologue return ture then request timer's epilogue  
- bool Watch::prologue  (){
+ bool Watch::prologue (){
      return true;
  }
 
 
- void Watch::epilogue   (){
-     scheduler.Scheduler::resume(); //Q:why not use resume in guarded_scheduler, prevent double enter in critical section
+ void Watch::epilogue (){
+     bellringer.check();
+     organizer.Scheduler::resume(); //Q:why not use resume in guarded_scheduler, prevent double enter in critical section
  }
 

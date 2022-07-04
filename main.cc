@@ -14,8 +14,9 @@
 #include "thread/scheduler.h"
 #include "device/watch.h"
 #include "syscall/guarded_scheduler.h"
+#include "meeting/bellringer.h"
 
-
+#include "user/idle.h"
 
 #define TEXTLEN 1000
 
@@ -103,31 +104,50 @@ static void test_key_ctrl(){
 	}
 }
 
+#define stack_size 4096
+
 Plugbox plugbox;
 PIC pic;
 CGA_Stream cout;
 Panic panic;
 CPU cpu;
-Keyboard keyboard;
-// Scheduler scheduler;
-Guarded_Scheduler scheduler;
+Guarded_Keyboard guarded_keyboard;
+
 Guard guard;
 Watch watch(1000);
 Guarded_Organizer organizer;
-static char app_stack[2048];
+
+static char app_stack[stack_size];
+static char stack_idle[stack_size];
+static char stack_loop1[stack_size];
+static char stack_loop2[stack_size];
+static char stack_loop3[stack_size];
+
+Idle idle(stack_idle + sizeof(stack_idle));
+Loop loop1(stack_loop1 + sizeof(stack_loop1), 1);
+Loop loop2(stack_loop2 + sizeof(stack_loop3), 2);
+Loop loop3(stack_loop3 + sizeof(stack_loop3), 3);
+
+Bellringer bellringer;
 
 int main()
 {
 	cpu.enable_int();  
-	keyboard.plugin();
+	guarded_keyboard.plugin();
 	/*The constructor gives the application process a stack. 
 	Here tos must already point to the end of the stack, since 
 	for the PC stacks grow from the high to the low addresses.
 	*/
 	Application application(app_stack + sizeof(app_stack));
 
+
+
 	cout << "start ...." << endl;                      
 	organizer.ready(application);
+	organizer.ready(loop1);
+    organizer.ready(loop2);
+    organizer.ready(loop3);
+
 	/*
 	Q: 如果将 guard.enter(); 和 watch.windup(); 交换 会发生什么?
 	1. toc_switch 中 modify the address which is not belonging to it

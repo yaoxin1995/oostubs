@@ -16,7 +16,7 @@
 #include "entrant.h"
 #include "object/chain.h"
 /* Add your code here */ 
-class Waitingroom;
+class Waitingroom; // forward decleration
 class Customer : public Entrant
 /* Add your code here */ 
 {
@@ -30,7 +30,10 @@ public:
 	};
 // This method is used to note in the Customer that it is currently waiting for an event in the Waitingroom w.	
 	void waiting_in (Waitingroom *w){ room = w;};
-// This can be used to determine in which Waitingroom object the customer is registered. A return value of 0 should mean that the process is not waiting for any event, i.e. it is either the currently running process, is on the scheduler's ready list, has already been terminated or has not yet been registered with the scheduler.	
+// This can be used to determine in which Waitingroom object the customer is registered. 
+//A return value of 0 should mean that the process is not waiting for any event, i.e. 
+//it is either the currently running process, is on the scheduler's ready list, has already 
+//been terminated or has not yet been registered with the scheduler.	
 	Waitingroom* waiting_in (){ return room; };
 
 };

@@ -32,11 +32,13 @@ public:
 	// Release operation: If there is at least one customer on the waiting list, the first of them will be woken up. Otherwise, the semaphore counter is incremented by one.
 	void v ();
 
+	// ensure that the call to wait() and signal() does not cost more 
+	// than to p() and v(),  these two methods should be defined as inline.
 	// This method is just another name for the method p().
-	void wait (){ p();};
+	inline void wait (){ p();};
 
 	// This method is just another name for the method v().
-	void signal (){ v();};
+	inline void signal (){ v();};
 };
 
 #endif

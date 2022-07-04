@@ -42,6 +42,11 @@ bool Keyboard::prologue(){
 }
 
 void Keyboard::epilogue(){
+    // read_key is used for "If a buffer entry has to be overwritten without the 
+    // old value having been fetched by an application process, the semaphore must 
+    // therefore not be incremented"  ==> because the key buffer size is 1, therefore we 
+    // use read_key variable to make sure that the max. value of semaphore is 1
+
     if (read_key) {
         this->read_key = false;
         sem_key.v();

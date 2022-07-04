@@ -17,6 +17,9 @@
 #include "syscall/guarded_scheduler.h"
 #include "syscall/guarded_organizer.h"
 #include "syscall/guarded_semaphore.h"
+#include "user/loop.h"
+
+extern Loop loop2;
 
 
 /* Add your code here */ 
@@ -32,21 +35,10 @@ extern CPU cpu;
 extern Guarded_Organizer organizer;
 
 /* Add your code here */ 
-static char stack_loop1[4096];
-static char stack_loop2[4096];
-static char stack_loop3[4096];
+
 
 void Application::action()
 {
-    Loop loop1(stack_loop1 + sizeof(stack_loop1), 1);
-    Loop loop2(stack_loop2 + sizeof(stack_loop3), 2);
-    Loop loop3(stack_loop3 + sizeof(stack_loop3), 3);
-
-    organizer.ready(loop1);
-    organizer.ready(loop2);
-
-
-    organizer.ready(loop3);
 
 /* Add your code here */ 
     for (;;) {

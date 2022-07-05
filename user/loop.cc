@@ -16,6 +16,7 @@
  #include "syscall/guarded_scheduler.h"
 #include "syscall/guarded_organizer.h"
 #include "syscall/guarded_semaphore.h"
+#include "syscall/guarded_buzzer.h"
  
 extern CGA_Stream cout;
 extern Plugbox plugbox;
@@ -24,26 +25,27 @@ extern Panic panic;
 extern CPU cpu;
 // extern Guarded_Scheduler scheduler;
 extern Guarded_Organizer organizer; 
-// extern Scheduler scheduler; 
+extern Guarded_Semaphore semaphore;
  
  
 void Loop::action()
 {
-
+    Guarded_Buzzer buzzer;
     for (;;) {
-        // prevent external interupts interupt the app execution
-        {
-            Secure secure;
-            cout.setpos(40, 20); 
-            cout << "II am loop" << i << endl;
+       semaphore.p();
+       //cout.setpos(50,10);
+       cout <<" I am Loop: "<< i << endl;
+       semaphore.v();
+
+       i %= max;
+       buzzer.set(5);
+       buzzer.sleep();
+
+        if (i > 200) {
+	        organizer.resume();  // switch to other thread
+	        i = 0;
         }
 
-
-        if (i == 1) {
-            organizer.exit();
-        }
-            
-        // scheduler.resume();
     }
  
 }

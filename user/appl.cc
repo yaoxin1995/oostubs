@@ -18,6 +18,8 @@
 #include "syscall/guarded_organizer.h"
 #include "syscall/guarded_semaphore.h"
 #include "user/loop.h"
+#include "syscall/guarded_buzzer.h"
+#include "syscall/guarded_keyboard.h"
 
 extern Loop loop2;
 
@@ -33,26 +35,23 @@ extern Panic panic;
 extern CPU cpu;
 // extern Guarded_Scheduler scheduler;
 extern Guarded_Organizer organizer;
+extern Guard guard;
+extern Guarded_Semaphore semaphore;
+extern Guarded_Keyboard guarded_keyboard;
+extern Loop loop1;
 
 /* Add your code here */ 
-
 
 void Application::action()
 {
-
+    organizer.ready(loop1);
 /* Add your code here */ 
     for (;;) {
-        // prevent external interupts interupt the app execution
-        {
-            Secure secure;  // destroy look after we leave the {}
-            cout.setpos(20, 20);
-            cout << "II am app" << endl;
 
-        }
-
-        
-        // scheduler.resume();
-        organizer.kill(loop2);
-    }
+        Key k = guarded_keyboard.getkey();
+        semaphore.p();
+        cout << k << endl;
+        semaphore.v();
+    }   
  
 }

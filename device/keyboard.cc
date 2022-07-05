@@ -51,7 +51,7 @@ void Keyboard::epilogue(){
         this->read_key = false;
         sem_key.v();
     }
-
+/*
     int x, y;
     cout.flush();
     cout.getpos(x, y);
@@ -59,6 +59,7 @@ void Keyboard::epilogue(){
     cout << last_key << endl; 
     cout.flush();
     cout.setpos(x, y);
+*/
 }
 
 

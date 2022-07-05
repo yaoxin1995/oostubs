@@ -13,16 +13,24 @@
 
 #include "user/idle.h"
 #include "machine/cpu.h"
+#include "syscall/guarded_semaphore.h"
 
 extern CGA_Stream cout;
 extern CPU cpu;
+extern Guarded_Semaphore semaphore;
  
 inline void Idle::action()
 {
-
+    int i = 1;
     for (;;) {
         cpu.idle();
-		cout << "idle" << endl;
+        semaphore.p();
+        //cout.setpos(15, 15);
+		cout << "idle" << i << endl;
+        i++;
+        semaphore.v();
+        if (i > 100)
+            i = 0;
     }
  
 }

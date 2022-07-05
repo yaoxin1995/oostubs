@@ -38,6 +38,7 @@ public:
 		Bell *del = nullptr;  
 
 		while(tmp) {
+			tmp->tick();
 			if (tmp->run_down()) {
 				tmp->ring();
 				del = tmp;

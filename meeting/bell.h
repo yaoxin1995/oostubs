@@ -15,6 +15,9 @@
 
 /* Add your code here */ 
 #include "object/chain.h"
+#include "device/cgastr.h"
+
+extern CGA_Stream cout; 
 class Bell
 /* Add your code here */ 
 : public Chain
@@ -37,6 +40,8 @@ public:
 	}
 
 	void tick () {
+		//cout.setpos(20,20);
+		//cout << "bell counter: "<< counter << endl;
 		--counter;
 	}
 

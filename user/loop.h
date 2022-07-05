@@ -29,10 +29,11 @@ class Loop: public Thread
 private:
 	Loop (const Loop &copy); // prevent copying
     int i;
+	int max;
 
 public:
 /* Add your code here */ 
-	Loop (void* tos, int i):  Thread(tos) , i(i){}
+	Loop (void* tos, int max):  Thread(tos) , i(0), max(max){}
 	void action ();
 };
 

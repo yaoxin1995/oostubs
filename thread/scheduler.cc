@@ -29,7 +29,7 @@ void Scheduler::exit(){
     if(first)  
         dispatch(*first);
     else {
-        cout << "readly list is empty, dispath idle thread" << endl;
+        //cout << "readly list is empty, dispath idle thread" << endl;
         dispatch(idle);
     }
 } 

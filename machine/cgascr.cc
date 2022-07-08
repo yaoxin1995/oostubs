@@ -95,33 +95,40 @@ void CGA_Screen::shift_up_one_line ()
 void CGA_Screen::print (char* text, int length, unsigned char attrib)
 {
     
-    int start_x, start_y, i;
+ int x, y;
+  getpos(x, y);
 
-    getpos(start_x, start_y);
-
-    for (i = 0; i < length; i++) {
-        if (text[i] == '\n') {
-            if (start_y == COLS_COUNT -1)
-                shift_up_one_line();
-            else
-                start_y += 1;
-            start_x = 0;
-            continue;
-        }
-
-        show(start_x, start_y, text[i], attrib);
-
-        if (start_x == COLS_COUNT - 1) {
-            start_x = 0;
-            if (start_y == ROW_COUNT - 1)
-                shift_up_one_line();
-            else
-                start_y++;
-        }
-        start_x++;
-
+  for (int i = 0; i != length; ++i) {
+    // '\n' behandeln.
+    if (text[i] == '\n') {
+      ++y;
+      x = 0;
+    } else {
+      // 1 Zeichen ausgeben.
+      show(x, y, text[i], attrib);
+      ++x;
     }
 
-    setpos(start_x, start_y);
+    // Wenn das Ende der Zeile erreicht ist umbrechen.
+    if (x >= 80) {
+      ++y;
+      x = 0;
+    }
+
+    // Wenn das Ende des Bildschirms erreicht ist nach oben scrollen.
+    if (y >= 25) {
+      // Gesamten CGA-Speicher eine Zeile nach oben kopieren.
+      for (int i = 0; i != 2 * 80 * 24; ++i)
+        CGA_START[i] = CGA_START[i + (2 * 80)];
+      // Letzte Zeile ausnullen.
+      for (int i = 2 * 80 * 24; i != 2 * 80 * 25; i += 2) {
+        CGA_START[i] = ' ';
+	CGA_START[i+1] = 0x0f;
+      }
+      y = 24;
+    }
+  }
+
+  setpos(x, y);
     
 } 

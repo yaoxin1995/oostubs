@@ -171,7 +171,7 @@ bootdisk: $(OBJDIR)/bootdisk.iso
 # 'qemu' runs the QEMU emulator with the system
 
 qemu: $(OBJDIR)/bootdisk.iso
-	$(QEMU) -drive file=build/bootdisk.iso,format=raw -k en-us
+	$(QEMU) -drive file=build/bootdisk.iso,format=raw -k en-us -soundhw pcspk
 
 # --------------------------------------------------------------------------
 # 'qemu-smp' runs QEMU in SMP (symmetric multi-processing) mode with 2 CPUs

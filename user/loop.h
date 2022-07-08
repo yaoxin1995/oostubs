@@ -24,16 +24,18 @@
 #include "thread/entrant.h"
 #include "syscall/thread.h"
 
+
 class Loop: public Thread
 {
 private:
 	Loop (const Loop &copy); // prevent copying
     int i;
-	int max;
+	int mod_num;
+
 
 public:
 /* Add your code here */ 
-	Loop (void* tos, int max):  Thread(tos) , i(0), max(max){}
+	Loop (void* tos, int mod_num, int i):  Thread(tos) , i(i), mod_num(mod_num){}
 	void action ();
 };
 

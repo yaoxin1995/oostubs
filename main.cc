@@ -15,10 +15,11 @@
 #include "device/watch.h"
 #include "syscall/guarded_scheduler.h"
 #include "meeting/bellringer.h"
+#include "meeting/buzzer.h"
 
 #include "user/idle.h"
 #include "syscall/guarded_semaphore.h"
-
+#include "syscall/guarded_speaker.h"
 #define TEXTLEN 1000
 
 
@@ -126,42 +127,69 @@ static char stack_loop2[stack_size];
 static char stack_loop3[stack_size];
 
 Idle idle(stack_idle + sizeof(stack_idle));
-Loop loop1(stack_loop1 + sizeof(stack_loop1), 100);
-Loop loop2(stack_loop2 + sizeof(stack_loop3), 2);
-Loop loop3(stack_loop3 + sizeof(stack_loop3), 3);
+Loop loop1(stack_loop1 + sizeof(stack_loop1),   10, 1);
+Loop loop2(stack_loop2 + sizeof(stack_loop3),  1000, 2);
+Loop loop3(stack_loop3 + sizeof(stack_loop3),  10000, 3);
+
+void bellringer_test() {
+  Buzzer b1, b2, b3, b4, b5;
+
+  bellringer.job(&b1,100); // empty list
+  bellringer.job(&b2,50); // smallest element
+  bellringer.job(&b3,75); // middle element
+  bellringer.job(&b4,150); // biggest element
+  bellringer.job(&b5,125); // middle element
+  // expect result "50\n25\n25\n25\n25"
+  
+  Chain* run = bellringer.first();
+  while (run) {
+    cout << static_cast<Bell*>(run)->wait() << endl;
+    run = run->next;
+  }
+
+}
 
 Bellringer bellringer;
+Guarded_Speaker speaker;
+
+void speak_test(){
+	speaker.play_sound(1000);// PC speaker through PIT 
+	while(1);
+}
+
 
 int main()
 {
+
 	cpu.enable_int();  
 	guarded_keyboard.plugin();
-	/*The constructor gives the application process a stack. 
-	Here tos must already point to the end of the stack, since 
-	for the PC stacks grow from the high to the low addresses.
-	*/
+// 	/*The constructor gives the application process a stack. 
+// 	Here tos must already point to the end of the stack, since 
+// 	for the PC stacks grow from the high to the low addresses.
+// 	*/
 	Application application(app_stack + sizeof(app_stack));
 
 
+//	bellringer_test();
 
 	cout << "start ...." << endl;                      
 	organizer.ready(application);
 //	organizer.ready(loop1);
-  //  organizer.ready(loop2);
-    //organizer.ready(loop3);
+//   //  organizer.ready(loop2);
+//     //organizer.ready(loop3);
 
-	/*
-	Q: 如果将 guard.enter(); 和 watch.windup(); 交换 会发生什么?
-	1. toc_switch 中 modify the address which is not belonging to it
-	2. 更严重是会enqueue null pointer 到 thread ready list 中,下一次会 call resume() 时 会从 ready list 中dequeue null pointer,导致scheduler无法 切换进程 see 
-	https://github.com/yaoxin1995/oostubs/blob/shiyue-task5/thread/scheduler.cc#L50
-	*/
+// 	/*
+// 	Q: 如果将 guard.enter(); 和 watch.windup(); 交换 会发生什么?
+// 	1. toc_switch 中 modify the address which is not belonging to it
+// 	2. 更严重是会enqueue null pointer 到 thread ready list 中,下一次会 call resume() 时 会从 ready list 中dequeue null pointer,导致scheduler无法 切换进程 see 
+// 	https://github.com/yaoxin1995/oostubs/blob/shiyue-task5/thread/scheduler.cc#L50
+// 	*/
 	guard.enter();	 // application is the very first thread, scheduler lauch this thread by call kickoff fucntion. In kickoff, we leave the critical section, which means we have to enter critical section here 		
 	watch.windup();  
 	
 
 	organizer.schedule();
 
-	for(;;) ;
+// 	for(;;) ;
 	return 0;
 }

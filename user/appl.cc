@@ -20,9 +20,7 @@
 #include "user/loop.h"
 #include "syscall/guarded_buzzer.h"
 #include "syscall/guarded_keyboard.h"
-
-extern Loop loop2;
-
+#include "machine/speaker.h"
 
 /* Add your code here */ 
  
@@ -39,13 +37,16 @@ extern Guard guard;
 extern Guarded_Semaphore semaphore;
 extern Guarded_Keyboard guarded_keyboard;
 extern Loop loop1;
-
+extern Loop loop2;
+extern Loop loop3;
 /* Add your code here */ 
 
 void Application::action()
 {
     organizer.ready(loop1);
-/* Add your code here */ 
+    organizer.ready(loop2);
+    organizer.ready(loop3);
+
     for (;;) {
 
         Key k = guarded_keyboard.getkey();

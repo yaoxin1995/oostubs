@@ -24,11 +24,11 @@ inline void Idle::action()
     int i = 1;
     for (;;) {
         cpu.idle();
-        semaphore.p();
+        // semaphore.p();   //Q : don't need to  
         //cout.setpos(15, 15);
 		cout << "idle" << i << endl;
         i++;
-        semaphore.v();
+        // semaphore.v();
         if (i > 100)
             i = 0;
     }

@@ -64,7 +64,7 @@ void Keyboard::epilogue(){
 
 
 Key Keyboard::getkey() {
-  sem_key.p();
+  sem_key.p();      //cosuming the key
   read_key = true;
   return last_key;
 }

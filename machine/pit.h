@@ -32,6 +32,7 @@ public:
 	}
 	/* Sets a new interrupt interval. */
 	void interval(int us);
+
 };
 
 #endif

@@ -17,6 +17,8 @@
 #include "syscall/guarded_organizer.h"
 #include "syscall/guarded_semaphore.h"
 #include "syscall/guarded_buzzer.h"
+#include "machine/speaker.h"
+#include "library/random.h"
  
 extern CGA_Stream cout;
 extern Plugbox plugbox;
@@ -26,26 +28,38 @@ extern CPU cpu;
 // extern Guarded_Scheduler scheduler;
 extern Guarded_Organizer organizer; 
 extern Guarded_Semaphore semaphore;
- 
- 
+extern Speaker speaker;
+Random random(3);
 void Loop::action()
 {
+    int j = 0;
+    int rn = 0;
+    int k = 0;
     Guarded_Buzzer buzzer;
     for (;;) {
+
+
+       
        semaphore.p();
-       //cout.setpos(50,10);
+       cout.setpos(50,10);
        cout <<" I am Loop: "<< i << endl;
+       
+       rn = random.number() % mod_num + 1;
+       speaker.play_sound(rn);
+       while(j < 100000){
+            j++;
+        } 
        semaphore.v();
 
-       i %= max;
-       buzzer.set(5);
+       buzzer.set(15);
        buzzer.sleep();
 
-        if (i > 200) {
+        if (k > 200) {
 	        organizer.resume();  // switch to other thread
-	        i = 0;
+	        k = 0;
         }
-
+        j = 0;
+        k++;
     }
  
 }

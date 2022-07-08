@@ -24,7 +24,7 @@ void Semaphore::p(){
 
 void Semaphore::v(){
     if(Chain *chain = dequeue())
-        organizer.Organizer::wakeup(*static_cast<Customer *>(chain));  //at least one customer on the waiting list
+        organizer.Organizer::wakeup(*static_cast<Customer *>(chain));  //at least one customer on the waiting list, wake up the first
     else 
         counter = counter + 1;
 }

@@ -95,6 +95,8 @@ public:
 
 	// SET_LED: sets or clears the specified LED
 	void set_led(char led, bool on);
+
+	void flip_speaker();
 };
 
 #endif

@@ -374,3 +374,31 @@ void Keyboard_Controller::set_led (char led, bool on)
 		pic.allow(PIC::keyboard);
 	
 }
+// SET_LED: sets or clears the specified LED
+
+void Keyboard_Controller::flip_speaker ()
+{
+
+	int speaker_pos = 0;
+	bool is_masked = false;
+	IO_Port speaker_port(0x61);
+
+	if (!pic.is_masked(PIC::keyboard)) {
+		pic.forbid(PIC::keyboard);
+		is_masked = true;
+	}
+
+
+	speaker_pos = speaker_port.inb() & 0x2;
+
+	speaker_pos = speaker_pos == 1 ? 0 : 1;
+
+	data_port.outb(speaker_pos);
+
+	if (is_masked)
+		pic.allow(PIC::keyboard);
+
+	cout<<"playing through KBD"<< endl;
+
+	
+}

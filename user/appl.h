@@ -25,7 +25,6 @@ class Application: public Thread
 {
 private:
 	Application (const Application &copy); // prevent copying
-
 public:
 
 	Application (void* tos):  Thread(tos) {}

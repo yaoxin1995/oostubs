@@ -17,7 +17,7 @@
 #include "guard/gate.h"
 #include "machine/key.h"
 #include "device/cgastr.h"
-
+#include "meeting/semaphore.h"
 
 
 class Keyboard :  public Gate, public Keyboard_Controller
@@ -25,16 +25,17 @@ class Keyboard :  public Gate, public Keyboard_Controller
 {
 private:
 	Keyboard(const Keyboard &copy); // prevent copying
-	char last_key;	//shared charakter between prologue and epilogue
-
+	Key last_key;	//shared charakter between prologue and epilogue
+	bool read_key;
+	Semaphore sem_key;
 public:
-	Keyboard(){}
+	Keyboard();
 	// PLUGIN: "Plugs in" the keyboard (driver). From now on, keypresses are handled.
 	void plugin();
 
 	bool prologue();
 	void epilogue();
-
+	Key getkey();
 
 };
 

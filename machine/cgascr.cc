@@ -68,60 +68,43 @@ void CGA_Screen::getpos (int &x, int &y)
 }
 
 
-void memcpy(void * dest, const void * source, size_t num)
-{
-	for(size_t i = 0; i < num; i++) 
-	{
-		*((char*)dest+i) = *((char*)source+i);
-	}
-}
-
-void CGA_Screen::shift_up_one_line ()
-{
-    char *dest, *source, *pos;
-
-    for (int i = 0; i < ROW_COUNT - 1; i++) {
-        dest = CGA_START + i * COLS_COUNT * 2;
-        source = CGA_START + (i + 1) * COLS_COUNT * 2;
-        memcpy(dest, source, COLS_COUNT * 2);
-    }
-
-    pos = CGA_START + 2 * COLS_COUNT * (ROW_COUNT - 1);   
-    for (int i = 0; i < COLS_COUNT - 1; i++) 
-        pos[i * 2] = ' ';
-    
-}
 
 void CGA_Screen::print (char* text, int length, unsigned char attrib)
 {
-    
-    int start_x, start_y, i;
+    int x, y;
+    getpos(x, y);
 
-    getpos(start_x, start_y);
-
-    for (i = 0; i < length; i++) {
+    for (int i = 0; i != length; ++i) {
+        // '\n' case.
         if (text[i] == '\n') {
-            if (start_y == COLS_COUNT -1)
-                shift_up_one_line();
-            else
-                start_y += 1;
-            start_x = 0;
-            continue;
+            ++y;
+            x = 0;
+        } else {
+            // output 1 character .
+            show(x, y, text[i], attrib);
+            ++x;
         }
-
-        show(start_x, start_y, text[i], attrib);
-
-        if (start_x == COLS_COUNT - 1) {
-            start_x = 0;
-            if (start_y == ROW_COUNT - 1)
-                shift_up_one_line();
-            else
-                start_y++;
+ 
+        // When we reach the end of a line => go to next line
+        if (x >= COLS_COUNT) {
+            ++y;
+            x = 0;
         }
-        start_x++;
+ 
+        // When we reach the end of the screen, we should scroll up each line in screen by 1 line
+        if (y >= ROW_COUNT) {
+            // Copy all CGA memory up one line.
+            for (int i = 0; i != 2 * COLS_COUNT * (ROW_COUNT - 1); ++i)
+                CGA_START[i] = CGA_START[i + (2 * COLS_COUNT)];
+            // Zero out last line.
+            for (int i = 2 * COLS_COUNT * (ROW_COUNT - 1); i != 2 * COLS_COUNT * ROW_COUNT; i += 2) {
+                CGA_START[i] = ' ';
+	            CGA_START[i+1] = 0x0f;
+            }
 
+            y = ROW_COUNT - 1;
+        }
     }
 
-    setpos(start_x, start_y);
-    
+    setpos(x, y);
 } 

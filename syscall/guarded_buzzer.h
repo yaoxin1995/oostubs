@@ -13,15 +13,31 @@
 #define __Guarded_Buzzer_include__
 
 /* Add your code here */ 
-
+#include "meeting/buzzer.h"
+#include "guard/secure.h"
 class Guarded_Buzzer
-/* Add your code here */ 
+/* Add your code here */
+: public Buzzer
 {
 private:
 	Guarded_Buzzer(const Guarded_Buzzer &copy); // prevent copying
 public:
 	Guarded_Buzzer() {}
-/* Add your code here */ 
+/* Add your code here */
+	virtual ~Guarded_Buzzer() {
+		Secure sec;
+		Buzzer::destroy();
+	}
+
+	void set (int ms) {
+		Secure secure;
+		Buzzer::set(ms);			
+	}
+
+	void sleep () {
+		Secure secure;
+    	Buzzer::sleep();
+	}
 };
 
 #endif

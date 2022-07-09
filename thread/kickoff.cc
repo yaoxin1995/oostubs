@@ -15,10 +15,10 @@
 /* Add your code here */ 
 
 #include "thread/coroutine.h"
-#include "thread/scheduler.h"
+#include "syscall/guarded_organizer.h"
 #include "guard/guard.h"
 
-extern Scheduler scheduler;
+extern Guarded_Organizer organizer;
 extern Guard guard;
 // called with guared lock locked, therefore we need to release the lock
 
@@ -31,6 +31,6 @@ extern "C"  void kickoff (void *dummy1, void *dummy2, void *dummy3, void *dummy4
     obj->action();
 
     // for(;;){} 
-    scheduler.exit();
+    organizer.Scheduler::exit();
     
 }

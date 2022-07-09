@@ -9,4 +9,22 @@
 /* counting semaphore.                                                       */
 /*****************************************************************************/
 
-/* Add your code here */ 
+#include "meeting/semaphore.h"
+#include "syscall/guarded_organizer.h"
+
+extern Guarded_Organizer organizer;
+
+void Semaphore::p(){
+    if(counter > 0){
+        counter = counter - 1;
+    }else{
+        organizer.Organizer::block(*static_cast<Customer *>(organizer.active()),*this);
+    }
+}
+
+void Semaphore::v(){
+    if(Chain *chain = dequeue())
+        organizer.Organizer::wakeup(*static_cast<Customer *>(chain));  //at least one customer on the waiting list
+    else 
+        counter = counter + 1;
+}

@@ -88,7 +88,6 @@ private:
 	static char* const CGA_START; // can't be initialized here
 
 	CGA_Screen(const CGA_Screen &copy); // prevent copying
-	void shift_up_one_line ();
 
 
 public:

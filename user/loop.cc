@@ -10,37 +10,41 @@
 /* which thread shall run next.                                              */
 /*****************************************************************************/
 
-/* Add your code here */ 
+
  #include "user/loop.h"
  #include "thread/scheduler.h"
-/* Add your code here */ 
+ #include "syscall/guarded_scheduler.h"
+#include "syscall/guarded_organizer.h"
+#include "syscall/guarded_semaphore.h"
+#include "syscall/guarded_buzzer.h"
  
 extern CGA_Stream cout;
 extern Plugbox plugbox;
 extern PIC pic;
 extern Panic panic;
 extern CPU cpu;
-extern Scheduler scheduler; 
-/* Add your code here */ 
+// extern Guarded_Scheduler scheduler;
+extern Guarded_Organizer organizer; 
+extern Guarded_Semaphore semaphore;
+ 
  
 void Loop::action()
 {
-/* Add your code here */
-
+    Guarded_Buzzer buzzer;
     for (;;) {
-        // prevent external interupts interupt the app execution
-        {
-            Secure secure;
-            cout.setpos(40, 20); 
-            cout << "II am loop" << i << endl;
+       semaphore.p();
+       cout <<" I am Loop: "<< i++ << endl;
+       semaphore.v();
+
+       i %= max;
+       buzzer.set(5);
+       buzzer.sleep();
+
+        if (i > 200) {
+	        organizer.resume();  // switch to other thread
+	        i = 0;
         }
 
-
-        if (i == 1) {
-            scheduler.exit();
-        }
-            
-        scheduler.resume();
     }
  
 }

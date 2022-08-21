@@ -2,32 +2,31 @@
 /* Operating-System Construction                                             */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
-/*                         A P P L I C A T I O N                             */
+/*                                 L O O P                                   */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
-/* The Application class defines the (only) application for OOStuBS.         */
+/* Loop is a thread that does nothing else but count upwards and print this  */
+/* on the screen. In between, it yields the CPU. The Scheduler then decides  */
+/* which thread shall run next.                                              */
 /*****************************************************************************/
 
-#ifndef __application_include__
-#define __application_include__
+#ifndef __idle_include__
+#define __idle_include__
 
+/* Add your code here */ 
+ 
 #include "device/cgastr.h"
-#include "device/keyboard.h"
-#include "machine/pic.h"
-#include "device/cgastr.h"
-#include "machine/plugbox.h"
-#include "guard/secure.h"
 #include "thread/entrant.h"
-#include "user/loop.h"
+#include "syscall/thread.h"
 
-
-class Application: public Thread
+class Idle: public Thread
 {
 private:
-	Application (const Application &copy); // prevent copying
-public:
+	Idle (const Idle &copy); // prevent copying
 
-	Application (void* tos):  Thread(tos) {}
+public:
+/* Add your code here */ 
+	Idle (void* tos):  Thread(tos){}
 	void action ();
 };
 

@@ -41,6 +41,7 @@ toc_go:
 toc_switch:
 
     ; rdi has first argument, rsi has second argument
+    ; save  the NV-R of the current coroutine to its toc
 
     mov [rdi + rbx_offset], rbx ; rbx -> [rdi + rbx_offset]
     mov [rdi + r12_offset], r12 

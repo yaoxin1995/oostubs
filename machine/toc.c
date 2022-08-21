@@ -42,7 +42,7 @@ void toc_settle(struct toc *regs, void *tos,
 
 	*(--stack_pointer_array) = kickoff;
 
-	//TODO: handle rbp
+	//TODO: handle rbp: rbp can be arbitray value, since kichof is the first function
 	regs->rsp = stack_pointer_array;
 
 }

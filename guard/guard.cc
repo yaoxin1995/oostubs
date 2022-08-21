@@ -15,6 +15,12 @@
 
 extern CPU cpu;
 
+/* Q: why disable interrupt in leave?
+we could get interrupt between item = (Gate *)queue.dequeue();  and if(!item) 
+This is not good since the epilogue will be delayed for a long time. In this case, interrupt 
+handler will insert a epilogue into queue. 
+Then we leave the kernel although we have 1 epilogue in queue.
+*/
 void Guard::leave(){
     while(true){
 

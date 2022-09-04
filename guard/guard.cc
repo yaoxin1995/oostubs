@@ -49,11 +49,11 @@ void Guard::relay(Gate* item){
         cpu.enable_int();
         item -> epilogue();
         leave();
-        // cpu.disable_int();
+        //cpu.disable_int();
     }
     // critical section is occupied, put item in queue 
     else {
-        cpu.disable_int();
+        //cpu.disable_int();
         item->queued(true);
         queue.enqueue(item);    //put item in queue
         // cpu.enable_int();
